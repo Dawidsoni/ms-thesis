@@ -64,8 +64,8 @@ cillum dolore eu fugiat nulla pariatur.
 
 \numberedchapter{Introduction}
 
-In this chapter we will define the notion of knowledge graph along with the problem of completing it.\ Furthermore,
-we will discuss the main motivations for solving the considered problem and give an
+In the following introductory chapter, we will define the notion of knowledge graph along with the problem of
+completing it.\ Furthermore, we will discuss the main motivations for solving the considered problem and give an
 overview of the past work.\ Finally, we will provide an outline of our approach to the problem of completing a
 knowledge graph.
 
@@ -74,7 +74,7 @@ knowledge graph.
 Consider a set of objects $e \in E$ and a set of relations $r \in R$.\ Formally, a \textbf{knowledge graph} is a set
 of triples $(e_1, r, e_2) \in K$, which represents relations between the considered objects.\ Particularly,
 $e_1 \in E$ is called to be in a (directed) relation $r \in R$ with $e_2 \in E$ if and only if
-$(e_1, r, e_2) \in K$.\ We will refer to an object $e \in E$ as an \textbf{entity} and an object
+$(e_1, r, e_2) \in K$.\ We will refer to an object $e \in E$ as an \textbf{entity} and to an object
 $r \in R$ as a \textbf{relation}.\ Besides it, when considering a triple $(e_1, r, e_2)$, we will refer to
 $e_1, e_2$ as a \textbf{head entity} and a \textbf{tail entity}, respectively.\ From the practical perspective, we
 can think of our structure as a directed graph where vertices are represented by entities and edges are labelled
@@ -85,9 +85,8 @@ by relations.\ A toy example illustrating a knowledge graph is shown in
 the vast majority of relations are missing.\ This fact becomes intuitive when one realizes that adding one edge
 to a graph can add information about relations between several entities that are not adjacent to the added
 edge.\ As a result, the number of missing relations can grow exponentially with the increase of the number of
-edges.\ In practice, for a typical knowledge graph, except facts that contained directly in edges, a
-large portion of information can be inferred by taking into account multiple connections at once.\ The considered
-problem is known as the \textbf{Knowledge Graph Completion} problem.\newline
+edges.\ The problem of finding new relations in a knowledge graph is known
+as \textbf{Knowledge Graph Completion}.\newline
 
 \noindent Formally, we are given a knowledge graph $G$ and our goal is to find triples $(e_1, r, e_2) \in K$ that
 are likely to represent true facts.\ Specifically, given a head entity $e_1 \in E$ and a relation $r \in R$, we
@@ -125,7 +124,7 @@ encyclopedias like Wikipedia as well as news websites and as a result are often 
 
 \noindent Knowledge graphs are are also useful in many other areas.\ For instance, they are used to boost
 recommendation engines of popular content and social media platforms.\ Furthermore, knowledge graphs are leveraged
-in the healthcare industry, opening medical researchers to gain more insights from data.\ Additionally, they are
+in the healthcare industry, enabling medical researchers to gain more insights from data.\ Additionally, they are
 also used to represent the relations between words in human languages.\ Lastly, knowledge graphs are leveraged by
 financial services to secure human decisions and prevent money laundering initiatives.
 
@@ -135,7 +134,7 @@ financial services to secure human decisions and prevent money laundering initia
 In the recent years, various approaches have been tried to tackle the problem of knowledge graph completion.\ The most
 successful ones are based on data-driven models, often called machine learning models.\ These methods will be
 discussed more deeply in the \textit{Chapter} \ref{chapter:background}.\ For our task specifically, we can divide the
-considered models into ones that operate on triples (representing graph edges) alone and those that utilize graph
+considered models into ones that operate on triples alone (representing graph edges) and those that utilize graph
 context e.g.\ neighbours of a head/tail entity.\ Recently, a new branch of models that leverage additional text-based
 information has been established, but those models are not considered in this thesis.\newline
 
@@ -157,7 +156,7 @@ networks, especially on the \textit{GCN} architecture proposed in \cite{gcn_mode
 include the \textit{SACN} model presented in \cite{sacn_model} and recently developed \textit{CompGCN} model
 introduced in \cite{comp_gcn_model}.\ Although many other models have been proposed, as shown in
 \cite{re_evaluation}, some of the authors have reported inflated quality results due to improper evaluation
-protocol.\ Therefore, we compare our techniques only with the mentioned models.
+protocol.\ Therefore, we compare our models only with the models discussed above.
 
 \section{Our approach}
 
@@ -185,22 +184,22 @@ as WN18RR and FB15K-237.
 
 In this chapter we will review the theory behind the techniques used to complete knowledge
 graphs.\ \textit{Section} \ref{sec:neural_networks}
-is devoted to the basic properties and concepts of neural networks.\ In the subsequent sections discuss more
-specialized models that are used to tackle the knowledge graph completion problem.\ In
+is devoted to the basic properties and concepts of neural networks.\ In the subsequent sections we discuss more
+specialized models that are used to tackle the stated problem.\ In
 \textit{Section} \ref{sec:graph_embedding_methods} and \textit{Section} \ref{sec:graph_neural_networks} we cover
-models learning graph representations.\ \textit{Section} \ref{sec:reinforcement_learning} provides and overview of
-how reinforcement learning can be utilized to tackle the considered problem.\ In \textit{Section}
+models learning graph representations.\ \textit{Section} \ref{sec:reinforcement_learning} provides an overview of
+how reinforcement learning can be utilized to complete knowledge graphs.\ In \textit{Section}
 \ref{sec:transformers} we discuss the transformer architecture, which is the main building block for our
 methods.\ Finally, in \textit{Section} \ref{sec:background_models} we show how the methods discussed in the previous
-sections have been utilized in the past to tackle the considered problem.
+sections have been utilized in the past to solve the considered problem.
 
 \section{Artificial neural networks}\label{sec:neural_networks}
 
 Neural networks are machine learning models inspired by a human brain.\ While the first neural models have
-been proposed decades ago, their popularity was very limited due to the poor quality of these models.\ In the recent
+been proposed decades ago, their popularity was very limited due to the poor performance.\ In the recent
 few years, the situation has changed as researchers developed sophisticated algorithms to optimize such models while
 in parallel computing resources have been grown significantly.\ At this point, neural networks have dominated other
-approaches to artificial intelligence, finding applications in practically every areas of human life.
+approaches to artificial intelligence, finding applications in practically every area of human life.
 
 \subsection{Feed-forward neural networks}\label{subsec:feed_forward}
 
@@ -210,7 +209,7 @@ vectors.\ One of the simplest neural network can be defined using the formula
 y = f(W x + b)
 \end{equation}
 where $x, y$ denotes input and output vectors of size $n$, $m$ respectively, $W$ is a $n \times m$ matrix of
-parameters, $b$ denotes a so-called bias vector of size $m$ and $f$ is a fixed activation function that provides
+parameters, $b$ denotes a so-called bias vector of size $m$ and $f$ is a fixed activation function that
 adds non-linearity to our formula.\ The more complex neural network would repeat the process of mapping vectors several
 times e.g.
 \begin{equation}\label{eq:multi_layer_network}
@@ -223,9 +222,9 @@ activation functions.\ A feed-forward neural network can be illustrated in the f
 \textit{Figure} \ref{fig:neural_network}.\newline
 
 \noindent While we have shown how a neural network maps input vectors to output vectors, it is still unclear how such
-model can be utilised to make predictions.\ The idea is to utilise so-called training dataset that is composed of
-input and expected output pairs.\ Specifically, it is leveraged to learn our neural network how to map inputs to
-outputs.\ Additionally, in order to make use of training dataset, one needs to convert given inputs and outputs
+model can be leveraged to make predictions.\ The idea is to utilise so-called training dataset that is composed of
+input, expected output pairs.\ It is used to learn our neural network how to map inputs to
+outputs.\ In order to make use of the training dataset, one needs to convert given inputs and outputs
 to real-valued vectors.\ As neural networks are supervised on training data, they belong to the subcategory of machine
 learning called supervised learning.\ After training a neural network, its quality is rated on a validation dataset,
 which is disjoint with training dataset, providing an estimation of quality for examples that were not seen by the
@@ -240,11 +239,11 @@ evaluation metrics.\newline
 \centering
 \includegraphics[scale=0.45]{neural_network}
 \caption{An example of a feed-forward network containing 2 hidden layers (marked in blue). The input layer
-(marked in blue) is composed of three neurons, while the output layer (marked in red) is composed of two neurons.}
+(marked in orange) is composed of three neurons, while the output layer (marked in red) is composed of two neurons.}
 \label{fig:neural_network}
 \end{figure}
 
-\noindent In order to fit a neural network to a given training dataset, one needs to find parameters that provides the
+\noindent In order to fit a neural network to a given training dataset, one needs to find parameters that provide the
 best correspondence between predicted output vectors and expected output vectors.\ The trainable parameters include
 linear transformation matrices and bias vectors.\ For instance, for a neural network defined by
 \textit{Equation} \ref{eq:multi_layer_network}, the trainable parameters include
@@ -259,26 +258,25 @@ a feed-forward neural network that would treat images as input vectors and apply
 1-dimensional output, representing a probability of an image to represent a cat.\ Actually, this approach works
 decently, but it suffers from the overfitting problem, causing that the quality of such model on unseen examples is
 lower than expected.\ The problem with the feed-forward approach is that such network tries to learn the dependencies
-between all pixels at the same time.\ The more natural way would be to learn a model to firstly recognize some
+between all pixels at the same time.\ The more natural way would be to train a model to firstly learn some
 low-level patterns like edges and then to recognize larger objects.\ Convolutional networks are models that implement
 this idea, enforcing the model to learn from neighbouring features.\newline
 
 \noindent In the case of convolutional networks, an input vector is represented by a 3-dimensional tensor of size
 $H \times W \times C$ interpreted as a height, width and  the number of channels respectively.\ A single convolutional
-layer maps the input tensor, often called as input feature map, to the output tensor, which is called an output
-feature map.\ A single output neuron is computed by multiplying element-wise a patch of input feature map with
+layer maps the input tensor, often called an input feature map, to the output tensor, which is called an output
+feature map.\ A single output neuron is computed by multiplying (element-wise) a patch of input feature map with
 a learnable 3D matrix of size $\tilde{h} \times \tilde{w} \times C$.\ The process is repeated by going through the
 input feature map with a sliding window of size $\tilde{h} \times \tilde{w} \times C$.\ The whole process for an input
-feature map with the number of channels $C = 1$ is shown in \textit{Figure} \ref{fig:convolutional_network}.\newline
-
-\noindent The discussed algorithm maps an input feature map of size $H \times W \times C$ to an output feature map of
-size $\tilde{H} \times \tilde{W} \times 1$, using a learnable kernel matrix of size
-$\tilde{h} \times \tilde{w} \times C$.\ In practice, this process is repeated $\tilde{C}$ times for independent
-kernel matrices, where $\tilde{C}$ is called the number of filters.\ In this case, the output feature map is of size
-$\tilde{H} \times \tilde{W} \times \tilde{C}$.\newline
+feature map with the number of channels $C = 1$ is shown in \textit{Figure}
+\ref{fig:convolutional_network}.\ The above-defined algorithm maps an input feature map of size
+$H \times W \times C$ to an output feature map of size $\tilde{H} \times \tilde{W} \times 1$, using a learnable
+kernel matrix of size $\tilde{h} \times \tilde{w} \times C$.\ In practice, this process is repeated $\tilde{C}$ times
+for independent kernel matrices, where $\tilde{C}$ is called the number of filters.\ In this case, the output feature
+map is of size $\tilde{H} \times \tilde{W} \times \tilde{C}$.\newline
 
 \noindent Convolutional networks are learnt by modifying parameters contained in kernel matrices.\ Mathematically,
-nothing prevents composing a neural network that is developing of a few convolutional layers followed by feed-forward
+nothing prevents composing a neural network that contains a few convolutional layers followed by feed-forward
 layers.\ In the first case inputs can be treated as 3D tensors, while in the latter case, they can be transformed
 to 1D representations.
 
@@ -286,10 +284,10 @@ to 1D representations.
 \centering
 \includegraphics[scale=0.48]{convolutional_network}
 \caption{An example of how convolutional layer maps input feature map (marked in blue) to output feature
-map (marked in orange).\ A single patch (marked in red) is multiplied element-wise with a learnable kernel matrix in
-order to produce one output feature (marked in purple).\ A sliding window goes though the entire image, multiplying
-input matches with a kernel matrix.\ Note that while in this example an input feature map contains only one channel,
-in case it would contain more channels $C$, a kernel matrix would be of size $C \times 3 \times 3$.}
+map (marked in orange).\ A single patch (marked in red) is multiplied element-wise with a learnable kernel matrix
+(marked in green) in order to produce one output feature (marked in purple).\ A sliding window goes though the entire
+image, multiplying input patches with a kernel matrix.\ Note that while in this example an input feature map contains
+only one channel, in the more general case of $C$ channels, the kernel matrix would be of size $C \times 3 \times 3$.}
 \label{fig:convolutional_network}
 \end{figure}
 
@@ -315,9 +313,9 @@ $$
 L(y, \hat{y}) = -\sum_i y_i log(\hat{y}_i)
 $$
 penalizing predictions for classes for which $y_i > 0$.\ Except natural intuitions that the above-defined loss
-function should be minimized in order to provide a good estimate of $y$, it also has mathematical foundations that
+function should be minimized in order to provide a good estimate of $y$, it has also mathematical foundations that
 can be found in \cite{goodfellow_book}.\ In case there are only two classes, the discussed loss function is often
-called a binary cross entropy and the task of optimising such function is referred as binary classification.
+called binary cross entropy, while the task of optimising such function is referred as binary classification.
 
 \subsection{Optimization}\label{subsec:optimization}
 
@@ -325,50 +323,50 @@ In the previous subsections we mentioned that a neural network is optimized by a
 matrices and bias vectors.\ Besides it, we defined a loss function that should be minimised in order to fit to the
 expected outputs.\ In this subsection, we show how to actually minimize a loss function.\newline
 
-\noindent First of all, our training data samples should be split into batches of fixed size $B$, often referred as
-batch size\ In each training step, a batch of inputs is pushed to a model and the parameters of the model will
-be slightly modified to lower the value of a loss function.\ Specifically, a technique called gradient descent is
-utilised to get a direction that should be followed in order to minimize the loss function.\ To do so, one may compute
-a gradient of the loss function with respect to all parameters, using so-called backpropagation algorithm, and obtain
-a vector that defines the desired direction.\ Then, the vector of parameters can be updated by applying
+\noindent First of all, our training data samples should be split into batches of fixed size $B$, which is often
+referred as batch size.\ In each training step, a batch of inputs is pushed to a model, and its parameters
+are slightly modified to lower the value of a loss function.\ In order to minimize it, a technique called gradient
+descent is utilised.\ Specifically, it computes a gradient of the loss function with respect to all parameters,
+using so-called backpropagation algorithm.\ As a result, the method obtains a vector that defines the direction that
+should be followed to lower the value of the loss function.\ Then, the vector of parameters is updated by applying
 $$
 \theta_{k + 1} = \theta_k - \alpha \nabla_{\theta} L(\tilde{Y}, Y)
 $$
-where $\alpha$ is called a learning rate.\ The process of updating parameters is repeated for all training batches and
+where $\alpha$ is called a learning rate.\ The process of updating parameters is performed for all training batches and
 repeated $E$ times, where $E$ is referred as the number of epochs.\ While this naive algorithm can stuck in a
-local minima, several advancements have been developed in order to make it possible to converge to global optima.\ One
+local minima, several advancements have been developed in order to make it possible to converge to a global minima.\ One
 of the currently popular approach is known as Adam optimizer, introduced in \cite{adam_optimizer}.\ Over time,
-researchers have also developed a specialized layers that speed up the convergence.\ One of the most successful layers
-is Batch Normalization, proposed in \cite{batch_normalization}, normalizing batches of inputs to the parameterised
-Gaussian distribution.\ The other popular alternative is Layer Normalization, introduced
+researchers have also developed specialized layers that increase the convergence rate.\ One of the most successful
+layers is Batch Normalization, proposed in \cite{batch_normalization}, normalizing batches of inputs to the
+parameterised Gaussian distribution.\ The other popular alternative is Layer Normalization, introduced
 in \cite{layer_normalization}, which normalizes each sample separately, making the computations more precise for
 small batch sizes.
 
 \subsection{Preventing overfitting}\label{subsec:overfitting}
 
 Neural networks are great in recognising patterns in training data.\ In particular, a feed-forward neural network with
-1 hidden layer can represent any function, which is known as the universal approximation theorem.\ But in practice,
-we are not interested in a model that remembers all training data i.e.\ overfits to it. \ Instead, we would like
-to design models that generalize well, providing good quality of predictions on unseen examples.\ In the recent years,
-several techniques have been developed in order to reduce the overfitting of neural networks.\newline
+1 hidden layer can represent any function.\ But in practice, we are not interested in a model that remembers all
+training data samples i.e.\ overfits to them.\ Instead, we would like to design models that generalize well, providing
+good quality of predictions on unseen examples.\newline
 
-\noindent One popular way of enforcing the network to generalize is adding a dropout introduced
-in \cite{dropout}.\ The idea is to (in each training step) set some random subset of neurons in a specific layer
+\noindent One popular way of enforcing the network to generalize is adding a dropout layer \cite{dropout}.\ The
+idea is to (in each training step) set some random subset of neurons after a specific layer
 to $0.0$ and rescale the other neurons by $1.0\ /\ (1.0 - r)$, where $r$ (often called a dropout rate) denotes
-the percentage of neurons that were set to $0.0$.\ The neurons that are set to $0.0$ can be treated as removed.\ The
-process is illustrated in \textit{Figure} \ref{fig:dropout}.\ During the evaluation of the network on unseen examples,
-all neurons are included and no scaling is applied.\ The intuition behind this approach is that it enforces the
-network to spread out its weights to many neurons rather than relying on a small number of connections.\newline
+the percentage of neurons that are set to $0.0$.\ The neurons that are set to $0.0$ can be treated as removed.\ The
+intuitive explanation of how dropout is applied during the training process, is shown in
+\textit{Figure} \ref{fig:dropout}.\ During the evaluation of the network on unseen examples, all neurons are included
+and no rescaling is applied.\ The intuition behind this approach is that it enforces the network to spread out its
+weights to many neurons rather than relying on a small number of connections.\newline
 
-\noindent The other technique to reduce the overfitting is to add an additional loss that penalizes our
-parameters.\ One popular way of doing that is to add a regularization term to our loss
+\noindent The other technique to reduce the overfitting is to add an additional loss that penalizes model's
+parameters.\ The common way of applying this idea is to add a regularization term to the loss function
 $$
 L(y, \tilde{y})^{\theta} = L_m^{\theta}(y, \tilde{y}) + \lambda \sum_i \theta_i^2
 $$
-where $\theta$ denotes a vector of parameters, $L_m$ is a loss provided by a network and $\lambda$ is a parameter
-controlling the regularization strength.\ This regularization technique is often called a weight decay.\ The intuition
-behind this approach is that it enforces the network to keep parameter values close to $0.0$ and avoid extreme values,
-making it less flexible.\newline
+where $\theta$ denotes a vector of parameters, $L_m$ is the loss given by the model and $\lambda$ is a parameter
+controlling the regularization strength.\ The above-defined technique is often called a weight decay.\ The intuition
+behind this approach is that it enforces the network to keep parameter values close to $0.0$ and to avoid extreme
+values, making it less flexible.\newline
 
 \begin{figure}[t]
 \centering
@@ -379,13 +377,13 @@ to $0.0$, which has an effect of ignoring their input and output connections.\ I
 \end{figure}
 
 \noindent The other regularization technique, which is designed for classification tasks, is label
-smoothing.\ The idea behind this method is to replace hard $0, 1$ labels with their soft versions.\ Specifically,
-when label smoothing parameter is set to $c \in (0, 1)$, true labels are set to $(1 - c) + c\ /\ N$, while false labels
-are set to $c\ /\ N$, where $N$ denotes the total number of classes.\ The main motivation behind this approach is that
-training dataset can contain mistakenly labeled examples.\ Another common situation is when multiple output labels
-are correct, while a dataset is constructed in a way that only a value for one class is set to $1.0$.\ In this case,
-label smoothing encourages a model to assign some non-zero probability to each class, enabling it to assign higher
-probabilities to labels that may be correct.
+smoothing.\ The idea behind this method is to replace hard $c \in \{0, 1\}$ labels with their soft
+versions.\ Specifically, when label smoothing parameter is set to $s \in (0, 1)$, true labels are replaced with
+$(1 - s) + s\ /\ N$, while false labels are replaced with $s\ /\ N$, where $N$ denotes the total number of
+classes.\ The main motivation behind this approach is that the training dataset can contain mistakenly labeled
+examples.\ Another common situation is when multiple output labels are correct, while a dataset is constructed in a way
+that only one label is true for a specific sample.\ In this case, label smoothing encourages a model to assign some
+non-zero probability to each class.\ In particular, it can assign higher probabilities to labels that may be correct.
 
 \section{Graph embedding methods}\label{sec:graph_embedding_methods}
 
@@ -406,8 +404,8 @@ embeddings can be later used by some supervised model to perform a node classifi
 classification task (e.g.\ classifying chemical structures).\ Most of embedding methods are based on so-called
 homophily hypothesis, which says that nodes that are highly interconnected and belong to similar network clusters
 should have similar embeddings.\ The other category of considered methods is based on structural equivalence
-hypothesis, saying that nodes having structural roles in a graph should be embedded closely together.\ Lastly,
-while most of methods allow to learn only fixed representations for nodes contained in the training
+hypothesis, which states that nodes with similar structural roles in a graph should be embedded closely
+together.\ Lastly, while most of methods allow to learn only fixed representations for nodes contained in the training
 dataset i.e.\ transductive methods, there exist more specialized methods allowing predictions to be made on unseen
 nodes i.e.\ inductive methods.
 
@@ -415,7 +413,7 @@ nodes i.e.\ inductive methods.
 
 One of the baseline models that outclassed previous approaches is DeepWalk, introduced in \cite{deepwalk}.\ At each step
 of the algorithm, a random node $v \in V$ is chosen.\ Then, a random path $W = \{w_1, w_2, \dots, w_k\}$ is
-constructed by starting in the node $v$ and repeatedly going to one of the neighbours of the currently last node on
+constructed by starting in the node $v$ and repeatedly going to one of the neighbours of the last node on the
 constructed path.\ The generated paths are later used to enforce nodes having similar neighbours to be closely
 embedded.\ Specifically, let $v_j \in W$ be a random node from the generated path and its context to be defined as
 a set of nodes $K = \{w_{j - c}, w_{j - c + 1}, \dots, w_{j + 1}, w_{j + c}\}$.\ Now, draw one vertex $v_c \in K$
@@ -424,14 +422,14 @@ and define $p(v_c | v_j)$ with the formula
 p(v_c | v_j) = \frac{e^{R_j C_c^T}}{\sum_k e^{R_j C_k^T}}
 \end{equation}
 where $R_i$ denotes the i-th row of the learnable embeddings matrix, while $C_i$ is the i-th row of the learnable
-context matrix.\ The goal of the above-defined model is to maximize this probability for generated $v_j, v_c$
+context matrix.\ The goal of the above-defined model is to maximize this probability for the generated $v_j, v_c$
 nodes.\ As a byproduct of this procedure, we get the embeddings matrix $R$, such that the i-th row represents the
 i-th node.\ The intuition behind this approach is it enforces nodes that have many common neighbours to have similar
 embeddings as they are often multiplied with the same context vectors.\ A toy example of how the presented algorithm
 could embed a small graph in 2-dimensional space is shown in \textit{Figure} \ref{fig:deepwalk}.\newline
 
-\noindent Interestingly, the presented algorithm was invented previously to embed words in a way that similar words
-have similar representations.\ The original method is called a Skip-gram model and was introduced in
+\noindent Interestingly, the presented algorithm was invented previously to embed words in a way that the related ones
+have similar representations.\ The original method is called the Skip-gram model and was introduced in
 \cite{skipgram}.\ Additionally, to speed up the computation time of \textit{Equation} \ref{eq:deepwalk}, the authors
 proposed to replace the original softmax function with a hierarchical softmax, keeping nodes in leaves of a binary
 tree.\ The other popular method is to use negative sampling, which tries to maximize
@@ -443,8 +441,8 @@ words.\ The analogous extensions can be applied to the DeepWalk algorithm.\newli
 
 \noindent While the original DeepWalk algorithm traverses the graph using DFS strategy, other strategies could
 be utilised.\ The authors of \cite{node2vec} generalized DeepWalk to choose between one of strategies: BFS, DFS,
-going back to the previous node.\ The proposed node2vec algorithm interleaves strategies by taking a random one in
-each step of constructing the path.\ A distribution defining a probability of choosing a specific strategy impacts the
+going back to the previous node.\ The proposed node2vec algorithm interleaves strategies by selecting a random one in
+each step of constructing the path.\ A distribution defining the probability of choosing a specific strategy impacts the
 learnt representations.\ Most commonly, the parameters defining a distribution of strategies are finetuned to provide
 the best quality.\newline
 
@@ -458,11 +456,11 @@ space.}
 \end{figure}
 
 \noindent The other interesting extension proposed in \cite{struc2vec} utilises the DeepWalk algorithm to embed
-nodes that have similar structural role closely together.\ The idea behind struc2vec is to first construct a
+nodes that have similar structural roles closely together.\ The idea behind struc2vec is to first construct a
 graph encoding structural similarities between nodes and then learn embeddings by performing random walks.\ The authors
 proposed to define a structural distance between nodes $u, v \in V$ based on the number of neighbours
 $R_k(u), R_k(v)$ at specified distances $k \in \{1, \dots, K\}$.\ Then, the constructed distances matrix is utilized
-to define a probability of transitioning from $u$ to $v$.\ As a result, random walks enforce nodes having similar
+to define the probability of transitioning from $u$ to $v$.\ As a result, random walks enforce nodes of the same
 structure to have similar embeddings.
 
 \subsection{Learning representations of unseen nodes}
@@ -479,10 +477,10 @@ trained jointly on the supervised task and random walks.\newline
 
 \noindent The other popular approach, introduced in \cite{sdne}, learns embeddings without a use of additional
 features.\ The idea of the authors is to apply a few feed-forward layers to map an adjacency vector of a specific node
-to its embedding and then apply a few more feed-forward layers in order to reconstruct the input adjacency
-vector.\ Except the reconstruction loss, additional L2 loss is applied between embeddings of neighbouring nodes,
-enforcing them to lie close to each other.\ The model is trained on both tasks jointly, ensuring that embeddings have
-the two above-defined properties.
+to its embedding $e_n$ and then apply a few more feed-forward layers in order to reconstruct the input adjacency
+vector.\ Except the reconstruction loss between the original adjacency vector and the reconstructed vector, additional
+L2 loss is applied between embeddings $e_n$ of neighbouring nodes, enforcing them to lie close to each other.\ The model
+is trained on both tasks jointly, ensuring that embeddings have the two above-defined properties.
 
 \section{Graph neural networks}\label{sec:graph_neural_networks}
 
@@ -505,7 +503,7 @@ where $N(i)$ denotes the neighbours of the node $i$ and $f_k$ is an aggregation 
 the described procedure is shown in \textit{Figure} \ref{fig:graph_network}.\ This process is performed
 for each node and repeated $K$ times, allowing a node to obtain messages from its k-hop neighbourhood.\ The
 final representations $h_i^{(K)}$ are utilised to perform the desired classification or regression task.\ In order to
-perform backpropagation and as a result update parameters of aggregation functions $f_k$, all of them must be
+perform the backpropagation and update parameters of aggregation functions $f_k$, they must be
 differentiable.\newline
 
 \noindent Interestingly, all graph neural networks models can be formulated with
@@ -515,10 +513,10 @@ simplest case, one may perform a node classification task.\ On the other side, t
 aggregated to perform a link prediction or even a graph classification task.\ Additionally, the above-defined
 message passing formulation can be easily extended to take into account different edge types or features.\newline
 
-\noindent In case initial representations of nodes $h_i^{(0)}$ are not learnable, new nodes can be added to a graph and
+\noindent In case initial representations $h_i^{(0)}$ are fixed, new nodes can be added to a graph and
 used for the underlying classification or regression task, without much loss of quality.\ In the other case, one needs
 to start with a random representation of the added node and retrain the model to learn its representation.\ The other
-posibility is to use graph embedding methods discussed in \textit{Section} \ref{sec:graph_embedding_methods}.
+possibility is to use graph embedding methods discussed in \textit{Section} \ref{sec:graph_embedding_methods}.
 
 \begin{figure}[t]
 \centering
@@ -548,7 +546,7 @@ Long Short-Term Memory (LSTM).\ In short, LSTM is a recurrent model that can tak
 inputs, in parallel reducing the well-known vanishing gradient problem.\ More details of the LSTM model can be found
 in \cite{goodfellow_book}.\newline
 
-\noindent Yet another approach is to use a so-called self-attention mechanism that is discussed in more detail in
+\noindent Yet another approach is to use a so-called self-attention mechanism that is discussed more deeply in
 \textit{Subsection} \ref{subsec:self_attention}.\ In the context of graph neural networks, the above-mentioned
 mechanism is used to learn how much attention should be put to a specific neighbour, when receiving its
 message.\ Specifically, let $\alpha_{ij} \in [0, 1]$ be a learnable weight, denoting how much attention the node
@@ -557,10 +555,42 @@ aggregation function be defined by the following formula
 $$
 h_i^{(k + 1)} = f_k(h_i^{(k)}, K) = \sigma(\sum_{h_j^{(k)} \in K} \alpha_{ij}^{(k)} W^{(k)} h_j^{(k)})
 $$
-where $K$ denotes a set of the node $i$ neighbours, $\sigma$ is an activation function and $W^{(k)}$ is a learnable
+where $K$ denotes the i-th node neighbours, $\sigma$ is an activation function and $W^{(k)}$ is a learnable
 matrix.\ Additionally, in order to take into account the current representation of the node $i$, self-connections
 are added to the graph.\ The model is optimized to update attention weights $\alpha$ and parameter matrices
 $W^{(k)}$, providing additional insights on the importance of specific neighbours.\newline
+
+\section{Reinforcement learning}\label{sec:reinforcement_learning}
+
+Consider a supervised model whose goal is to learn to play a computer game.\ It makes some decisions and based
+on them, the environment provides it new states.\ In this situation, the model does not know whether it made the
+right decision.\ As a result, it is not provided the ground-truth labels and cannot be supervised.\ This type of
+problem, which involves maximizing the long-time reward based on a sequence of decisions, concerns the area of machine
+learning called Reinforcement learning.\ Formally, the goal of this learning method is to find a function $\pi$ that
+maximizes the so-called utility function
+$$
+U^{\pi}(s) = \mathbb{E}(\sum_{t=0}^{\infty} \gamma^t R(s_t) | \pi, s = s_0)
+$$
+where $\pi$ is a policy function that defines the actions taken by the model, $s_t$ denotes the t-th state
+of the game, $R(s_t)$ is a function that assigns a reward to a given state and $\gamma \in (0, 1)$ is a constant
+lowering the rewards that are given in the later stage of the game.\ While the policy $\pi$ is deterministic,
+the environment can be nondeterministic (e.g.\ the provided state can be based not only on our actions, but also on
+how the other player reacts), thus the expected value is applied.\ The naive way of finding the optimal policy would
+be to observe that the optimal utility function is defined by
+$$
+U^{\star}(s) = R(s) + \gamma max_a \sum_{s'} P(s, a, s') U(s')
+$$
+for each $s \in S$, where $P(s, a, s')$ denotes the probability of landing in the state $s'$, assuming that the
+current state is $s$ and that the action $a$ was taken.\ These equations are called the Bellman equations and while
+they are not linear, there exist an iterative algorithm for solving the system of such equations.\newline
+
+\noindent In practise, the state space is too large to directly solve the system of Bellman equations.\ The common
+solution is to use a function approximating utility function $U$.\ It can be any learnable model and in
+particular, the most common choice is to use a neural network.\ In order to learn the approximation function $U$, one
+may supervise it by simulating some decisions.\ Instead of performing the exact simulation, it is common to rely on
+some approximations that are obtained using Monte Carlo methods.\ These ideas lead to popular Reinforcement learning
+algorithms, called Q-learning and Policy Gradients.\ More details behind the presented methods can be
+found in \cite{reinforcement_learning_book}.
 
 \section{Transformers}\label{sec:transformers}
 
@@ -570,7 +600,7 @@ for long sequences of inputs.\ While researches have developed many approaches t
 models was still inefficient due to their inability to being parallelized.\ Indeed, the main assumption behind
 recurrent neural networks is that the outputs of the k-th step cannot be inferred until the outputs of all previous
 $k - 1$ steps have been calculated.\ The situation has changed when researchers have proposed
-\cite{transformer_model}, introducing the transformer architecture that avoids all of the above-mentioned
+\cite{transformer_model}, introducing the transformer architecture that get rid of all the above-mentioned
 issues.\ In the following subsections we define the key components of the proposed transformer architecture and the
 extensions that have been developed over time.
 
@@ -578,9 +608,9 @@ extensions that have been developed over time.
 
 In the abstract form, attention mechanism can be defined as mapping a given query $Q$ and a list of $n$ key-value pairs
 $(K, V)$ to output values.\ More formally, we assume that a query $Q$ is a matrix of size $1 \times d_k$, while
-a list of keys and their corresponding values form the matrices $K$ and $V$ of size $n \times d_k$,
-respectively.\ While the attention mechanism can be modelled in many ways, one of the most popular forms is the
-so-called scaled dot-product attention
+a list of keys and their corresponding values form the matrices $K$ and $V$ of size $n \times d_k$.\ While
+the attention mechanism can be modelled in many ways, one of the most popular forms is the so-called scaled
+dot-product attention
 \begin{equation}\label{eq:self_attention}
 attention(Q, K, V) = softmax(\frac{Q K^T}{\sqrt{d_k}}) V
 \end{equation}
@@ -599,23 +629,23 @@ $$
 attention(Q, K, V) = softmax(\frac{(Q W_Q) (K W_K)^T}{\sqrt{d_k}}) (V W_V)
 $$
 where $W_K, W_V, W_Q$ are learnable matrices mapping keys, values and query, enabling the dot-product between the
-query and keys to be computed in a custom space as well as allowing linear transformations of values.\newline
+query and keys to be computed in the custom space as well as allowing values to be linearly transformed.\newline
 
-\noindent The introduced self-attention mechanism is the key component of a transformer layer that will be discussed
-more deeply in \textit{Subsection} \ref{subsec:transformer_encoder_decoder}.\ In particular, the transformer
-architecture makes use of multiple attention mechanisms, each learnt using an independent linear transformation
-of input keys, values and queries.\ Then, the outputs of all attention mechanisms are concatenated and projected the
-final output, using learnable matrix.\ This mechanism is called Multi-Head Attention and is used in practice instead
-of a single attention function.\ Intuitively, this extension of the basic mechanism allows the model to spread its
-attention to different features.
+\noindent The introduced self-attention mechanism is the key component of the transformer layer that will be discussed
+more deeply in \textit{Subsection} \ref{subsec:transformer_encoder_decoder}.\ In particular, it makes use of
+multiple attention mechanisms, each learnt using an independent linear transformations
+of input keys, values and queries.\ The outputs of all attention mechanisms are concatenated and projected the
+final output, using learnable matrix.\ This mechanism is called Multi-Head Attention and is often used instead
+of a single attention function.\ Intuitively, this extension allows the model to spread its
+attention to different features by adjusting attention weights of each attention head.
 
 \begin{figure}[t]
 \centering
 \includegraphics[scale=0.4]{attention}
 \caption{An illustration of the attention mechanism.\ In the first stage of the procedure, a query (marked in blue) and
 keys (marked in orange) are used to compute attention weights (marked in purple).\ Then, the output (marked in red) is
-formed by multiplying a matrix forming attention weights with a matrix values i.e.\ computing a convex combination of
-values.}
+formed by multiplying a matrix of attention weights with a matrix of values i.e.\ a convex combination of
+values is computed.}
 \label{fig:attention}
 \end{figure}
 
@@ -664,11 +694,11 @@ inputs as well as the outputs of the pointwise sublayer are summed with the outp
 allows the model to utilise the information contained in the previous layers.\ Besides, it reduces the vanishing
 gradients problem i.e\ when the gradient is vanishingly small.\newline
 
-\noindent The transformer encoder is composed of a few stacked transformer layers.\ It takes as an input a sequence of
+\noindent The transformer encoder is composed of a few stacked transformer layers.\ It takes a sequence of
 $n$ input elements, represented by their embeddings (with optionally positional embeddings applied), and returns a
 sequence of $n$ embeddings, each representing the corresponding input element in the context of other
 elements.\ Similarly to the encoder, the decoder is composed of a few transformer layers.\ The main distinction is
-that it takes as its input a sequence of $n$ output elements along with the outputs of the encoder.\ Most commonly,
+that it takes a sequence of $n$ output elements along with the outputs of the encoder.\ Most commonly,
 the outputs of the encoder are injected after a few first transformer layers by summing the output vectors
 element-wise.\ The sequence of output elements is often used to provide an information about the previous
 outputs.\ For instance, in the machine translation task, it's common to translate a sentence word by word.\ In this
@@ -684,14 +714,14 @@ can be used in any sequence-to-sequence tasks.
 \subsection{Extensions to the original transformer architecture}
 
 Over time, several extensions to the original model were proposed.\ One of the most successful ones include BERT,
-introduced in \cite{bert_model}.\ In contrast to the original transformer architecture, the BERT model works only
+introduced in \cite{bert_model}.\ In contrast to the original transformer architecture, it works only
 an input sequence.\ This makes it better suited for the tasks, in which the whole output sequence is expected
 to be predicted in one pass.\ As a result, the BERT model utilizes only the encoder part of the original transformer
 model.\ Additionally, the authors proposed to pretrain the proposed model on two tasks: restoring the masked input
 word and predicting the next sentence.\ The proposed approach effectively reduces the training time on the downstream
 task, leveraging the knowledge obtained during the pretraining process.\ Furthermore, the model was later
 extended in \cite{albert_model} to share the parameters of transformer layers, making it more
-parameter-efficient. \newline
+parameter-efficient.
 
 \begin{figure}[t]
 \centering
@@ -723,38 +753,6 @@ training procedure is finished, ELECTRA throws out the generator instead of the 
 whole procedure can be treated as the form of pretraining as the discriminator is further used to train the model on the
 downstream task.
 
-\section{Reinforcement learning}\label{sec:reinforcement_learning}
-
-Consider a supervised model whose goal is to learn to play a computer game.\ The model makes some decisions and based
-on them, the environment provides it new states.\ In this situation, the model does not know whether it made the
-right decision.\ As a result, it is not provided a ground-truth label and cannot be supervised.\ This type of problem,
-which involves maximizing the long-time reward based on a sequence of decisions, concerns the area of machine
-learning called Reinforcement learning.\ Formally, the goal of this learning method is to find a function $\pi$ that
-maximize the so-called utility function
-$$
-U^{\pi}(s) = \mathbb{E}(\sum_{t=0}^{\infty} \gamma^t R(s_t) | \pi, s = s_0)
-$$
-where $\pi$ is a so-called policy function that defines the actions taken by the model, $s_t$ denotes the t-th state
-of the game, $R(s_t)$ is a reward function that assigns a reward to a given state and $\gamma \in (0, 1)$ is constant
-lowering the rewards that are given in the later stage of the game.\ While the policy $\pi$ is deterministic,
-the environment can be nondeterministic (e.g.\ the provided state can be based not only on our actions, but also on
-how the other player reacts), thus the expected value is applied.\ The naive way of finding the optimal policy would
-be to observe that the optimal utility function is defined by
-$$
-U^{\star}(s) = R(s) + \gamma max_a \sum_{s'} P(s, a, s') U(s')
-$$
-for each $s \in S$, where $P(s, a, s')$ denotes the probability of landing in the state $s'$, assuming that the
-current state is $s$ and that the action $a$ was taken.\ These equations are called the Bellman equations and while
-they are not linear, there exist an iterative algorithm for solving the system of such equations.\newline
-
-\noindent In practise, the state space is too large to directly solve the system of Bellman equations.\ The common
-solution is to use a function approximating utility function $U$.\ This function can be any learnable model and in
-particular, the most common choice is to use a neural network.\ In order to learn the approximation function $U$, one
-may supervise it by simulating some decisions.\ Instead of performing the exact simulation, it is common to rely on
-some approximations that are obtained using Monte Carlo methods.\ These ideas lead to popular Reinforcement learning
-algorithms, called Q-learning and Policy Gradients.\ More details behind the presented methods can be
-found in \cite{reinforcement_learning_book}.
-
 \section{Models proposed for the graph completion problem}\label{sec:background_models}
 
 In this section, we will present the related work on the knowledge graph completion problem.\ The methods will be
@@ -767,30 +765,30 @@ protocol.
 \subsection{Context-free methods}
 
 One of the most influential idea to tackle the problem of knowledge graph completion, was to represent entities and
-relations by low-dimensional continuous vector representations, called embeddings.\ One of the most successful models
-that implemented this idea is TransE, introduced in \cite{transe_model}.\ The authors proposed to simply
-start with random representations of entities and relations and iteratively update them by optimizing the model
+relations by low-dimensional continuous vectors, called embeddings.\ The most known model applying this idea is
+\textbf{TransE}, introduced in \cite{transe_model}.\ The authors proposed to
+start with random embeddings of entities and relations, then iteratively update them by optimizing the model
 with the following loss function
 $$
 L(h, r, t, h', t') = max(0, ||h + r - t||_2 - ||h' + r - t'||_2 + \gamma)
 $$
 where $(h, r, t)$ represents a (positive) triple that belongs to the knowledge graph, while a (negative) triple
-$(h', r, t')$ is formed by replacing either $h$ or $t$ with a random entity.\ Intuitively, this model tries to
-rotate vectors of entities and relations in a way that the norm of the expression $||h + r - t||_2$ is higher for
-positive triples than for negative triples.\ Additionally, the margin parameter $\gamma$ controls how high the
-difference between the norms should be in order to have $0.0$ loss.\ Interestingly, the discussed model can be treated
-as a 1D convolution layer of $D \times 3$ image with fixed $(1, 1, -1)$ filter weights.\ The TransE model was
-further extended in \cite{stranse_model} to allow relation-specific embeddings of entities.\ More formally, the
-authors replaced the expression $||h + r - t||_2$ with $||W_{h,r} h + r - W_{t,r} t||_2$, allowing more flexible
-representations.\newline
+$(h', r, t')$ is formed by replacing either $h$ or $t$, with a random entity.\ Intuitively, this model tries to
+rotate vectors representing entities and relations in a way that the norm of the expression $||h + r - t||_2$ is higher
+for positive triples than for negative triples.\ Additionally, the margin parameter $\gamma$ controls how high the
+difference between the norms should be in order to have $0.0$ loss.\ Interestingly, the discussed architecture can be
+treated as a 1D convolution layer of $D \times 3$ image with fixed $(1, 1, -1)$ kernel.\ The TransE model was
+further extended to \textbf{STransE} in \cite{stranse_model} to allow relation-specific embeddings of entities.\ More
+formally, the authors replaced the expression $||h + r - t||_2$ with $||W_{h,r} h + r - W_{t,r} t||_2$, allowing more
+flexible representations.\newline
 
 \noindent In the recent years, many improvements to the TransE model have been proposed.\ In particular, several
 methods applying convolutional layers on top of embeddings have been developed.\ For instance, in \cite{conve_model} the
-authors proposed to concatenate the known head/tail entity embedding with the relation embedding, forming
-$D \times 2$ image.\ After that, a convolutional layer, followed by a feed-forward projection layer, are applied to
-obtain the output embedding $e_o$ of dimensionality $D$.\ Finally, a dot-product between $e_o$ and each entity
-$e \in E$ is computed to find the most similar entity to $e_o$.\ The model is supervised by a softmax function that
-is used to maximize the similarity between $e_o$ and the-ground truth tail/head entity that should be
+authors proposed \textbf{ConvE} model that concatenates the known head/tail entity embedding with the relation
+embedding, forming $D \times 2$ image.\ After that, a convolutional layer, followed by a feed-forward projection layer,
+are applied to obtain the output embedding $e_o$ of dimensionality $D$.\ Finally, a dot-product between $e_o$ and each
+entity $e \in E$ is computed to find the most similar entity to $e_o$.\ The model is supervised by a softmax function
+that is used to maximize the similarity between $e_o$ and the-ground truth tail/head entity that should be
 predicted.\ In order to allow the model to distinguish between input and output relations, separate
 relation embeddings are used for head and tail entities.\ The model not only optimizes the weights of intermediate
 layers, but also finetunes entity and relation embeddings.\ Additionally, it makes use of Dropout and Label
@@ -799,19 +797,45 @@ Smoothing to prevent overfitting.
 \subsection{Context-based methods}
 
 With the rise of machine learning models operating on graphs, several context-based methods for knowledge graph
-completion were proposed.\ S
+completion have been proposed.\ For instance, in \cite{sacn_model} the authors introduced the \textbf{SACN} model,
+leveraging custom WGCN layer
+$$
+h_i^{(k + 1)} = \sigma(\sum_{j \in N(i)} \alpha_{r(i, j)} g(h_i^{(k)}, h_j^{(k)}))
+$$
+where $g$ specifies how to incorporate neighboring information and $r(i, j)$ denotes the relation that connects the i-th
+node with the j-th node.\ Intuitively, the idea is to make it possible for each relation to focus on different parts
+of the neighbouring embeddings.\ The proposed model is composed of a few WGCN layers that collect the information from
+the neighbourhood, forming the embedding of the source entity $e_s$.\ Then, a convolutional network is applied on top of
+the aggregated embedding $e_s$ and input relation embedding, with the goal to predict the target entity.\ In particular,
+this architecture is similar to the ConvE model, except the fact that the embedding of the source entity is formed by
+aggregating neighbouring embeddings.\newline
 
-xx\newline
+\noindent The downside of the model discussed above is that the representations of relations are not updated by the
+graph neural network itself.\ In particular, the only way the aggregation function can leverage relation-specific
+information is by adjusting attention weights.\ The other approach is presented in the \textbf{CompGCN} model,
+introduced in \cite{comp_gcn_model}, where the representations of relations are used directly by the graph neural
+network.\ More precisely, the authors defined the aggregation function
+$$
+h_i^{(k + 1)} = \sigma(\sum_{j \in N(i)} W_{\lambda(r)} g(h_j^{(k)}, r_j^{(k)}))
+$$
+where $r_j^{(k)}$ denotes the representation of the j-th relation in the context of the k-th aggregation function and
+$\lambda(r)$ is used to select one of three matrices, depending on the type of relation $r$.\ Specifically, the
+matrix $W_O^{(k)}$ is used for relations originally contained in the knowledge graph, $W_I^{(k)}$ is used for added
+inverse relations and $W_S^{(k)}$ is used for self-loops.\ This allows the information to flow in both sides, while
+keeping the number of model's parameters low.\ Additionally, the relation embeddings are transformed after each layer
+$$
+r_i^{(k + 1)} = \tilde{W} r_i^{(k)}
+$$
+which makes the aggregation functions more flexible.\ Finally, the authors tested the proposed CompGCN model with
+multiple scoring functions applied on top of aggregated embeddings, including TransE and ConvE.\newline
 
-\noindent The other interesting approach was taken in \cite{go_for_a_walk_model}.\ The authors proposed to learn a
-model to walk though a graph in order to find a missing head or tail entity.\ More specifically, given a source entity
-and a relation, the goal is to take a sequence of decisions that will lead to the target entity, where in
-each step the model can go to one of its neighbours or remain in the current node.\ After a fixed number of steps,
-in case the model lands in the target entity, it is given a reward.\ Additionally, in order to increase the awareness
-about the history of visited nodes, it is included in the model's state.
+\noindent The other interesting approach was taken in \cite{go_for_a_walk_model}, introducing the \textbf{MINERVA}
+model.\ The authors proposed to learn it to walk though a graph in order to find a missing head or tail
+entity.\ More specifically, given a source entity and a relation, the goal is to take a sequence of decisions that
+will lead to the target entity, where in each step the model can go to one of its neighbours or remain in the current
+node.\ After a fixed number of steps, in case the model lands in the target entity, it is given a reward.\ Additionally,
+in order to increase the awareness about the visited nodes, the history is included in the model's state.
 
-TODO \cite{gcn_model}
-TODO \cite{comp_gcn_model}
 
 \numberedchapter{Developed methods}
 
