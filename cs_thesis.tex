@@ -16,6 +16,8 @@
 \usepackage{bbm}
 \usepackage{float}
 \usepackage{afterpage}
+\usepackage{makecell}
+\usepackage{multirow, fixltx2e}
 
 \graphicspath{{./images/}}
 
@@ -48,16 +50,37 @@
 \advisor        {dr hab. Jan Chorowski}
 \date           {29 września 2021}
 
-\polishabstract {Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut
-labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi
-ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
-cillum dolore eu fugiat nulla pariatur.
+\englishabstract{Knowledge graphs play a crucial role in many systems used by billions of people, providing access to
+relations between various objects present in our daily life. \ In parallel, the knowledge contained in them is often
+incomplete.\ Therefore, the problem of completing knowledge graphs is becoming more and more important for
+humanity.\ The fact that most of them are very dynamic systems, makes it impossible for humans to fill out
+missing relations by hand.\ In the past, simple heuristic approaches have been tried to tackle the stated problem,
+but they covered only simple cases like inverse relations.\ With the rise of machine learning techniques, researchers
+started developing various model-based approaches, making tremendous progress over the past few years.\newline
+
+\noindent At this time, the most successful methods are based on convolutional neural networks, reinforcement learning
+and graph neural networks.\ In this thesis, we tackle the stated problem with transformer-based models, which have
+already found their applications in many sequence-to-sequence problems, outclassing other approaches.\ In particular,
+we develop a model operating on single edges as well as explore several approaches that add graph-based context to the
+model.\ Additionally, we compare the developed methods with other successful approaches on two popular benchmark
+datasets, called FB15K-237 and WN18RR.
 }
 
-\englishabstract{Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut
-labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi
-ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
-cillum dolore eu fugiat nulla pariatur.
+\polishabstract {Grafy wiedzy odgrywają kluczową rolę w wielu systemach używanych przez miliardy ludzi, zapewniając
+dostęp do relacji między przeróżnymi obiektami obecnymi w naszym codziennym życiu.\ Jednocześnie, wiedza w nich zawarta
+jest często niepełna.\ Wynika stąd, że problem uzupełniania grafów wiedzy staje się coraz ważniejszy dla
+ludzkości.\ Fakt, że większość z nich to układy bardzo dynamiczne, uniemożliwia ludziom ręczne uzupełnianie brakujących
+relacji.\ W przeszłości próbowano prostych podejść heurystycznych do rozwiązania przedstawionego problemu, ale działały
+one tylko w prostych przypadkach, takich jak odwrotne relacje.\ Wraz z rozwojem technik uczenia maszynowego naukowcy
+zaczęli opracowywać różne podejścia oparte na modelach, osiągając ogromne postępy przez ostatnie kilka lat.\ Obecnie
+najlepsze metody opierają się na splotowych sieciach neuronowych, uczeniu ze wzmacnianiem i grafowych
+sieciach neuronowych.\newline
+
+\noindent W tej pracy podejmujemy postawiony problem przy pomocy modeli opartych na transformerach, które zdążyły już
+znaleźć swoje zastosowanie w wielu problemach mapowania sekwencji wejściowej do sekwencji wyjściowej, jednocześnie
+deklasując inne podejścia.\ W szczególności opracowujemy model operujący na pojedynczych krawędziach, a także badamy
+kilka podejść, które dodają do modelu kontekst oparty na grafie.\ Dodatkowo, porównujemy opracowane metody z innymi
+udanymi podejściami na dwóch popularnych zestawach danych, nazwanych FB15K-237 i WN18RR.
 }
 
 \begin{document}
@@ -155,7 +178,7 @@ to find a matching entity.\ The other popular methods are based on graph neural
 networks, especially on the \textit{GCN} architecture proposed in \cite{gcn_model}.\ The best-performing ones
 include the \textit{SACN} model presented in \cite{sacn_model} and recently developed \textit{CompGCN} model
 introduced in \cite{comp_gcn_model}.\ Although many other models have been proposed, as shown in
-\cite{re_evaluation}, some of the authors have reported inflated quality results due to improper evaluation
+\cite{re_evaluation}, some of researchers have reported inflated quality results due to improper evaluation
 protocol.\ Therefore, we compare our models only with the models discussed above.
 
 \section{Our approach}
@@ -711,7 +734,7 @@ introduced layers and techniques form together the original transformer architec
 \cite{transformer_model}.\ The model was developed with natural language processing applications in mind, but
 can be used in any sequence-to-sequence tasks.
 
-\subsection{Extensions to the original transformer architecture}
+\subsection{Extensions to the original transformer architecture} \label{subsec:transformer_extensions}
 
 Over time, several extensions to the original model were proposed.\ One of the most successful ones include BERT,
 introduced in \cite{bert_model}.\ In contrast to the original transformer architecture, it works only
@@ -837,7 +860,7 @@ node.\ After a fixed number of steps, in case the model lands in the target enti
 in order to increase the awareness about the visited nodes, the history is included in the model's state.
 
 
-\numberedchapter{Developed methods}
+\numberedchapter{Developed methods}\label{chapter:developed_methods}
 
 TODO
 
@@ -847,27 +870,238 @@ TODO
 
 \numberedchapter{Experiments}
 
-TODO
+As part of this thesis, we conducted several experiments involving our ideas presented in
+\textit{Chapter} \ref{chapter:developed_methods}.\ Additionally, we compared the developed methods with competitive
+baseline models presented in \textit{Section} \ref{sec:background_models}.\ The first sections of this chapter describe
+the conducted experiments, while in the last section we present the obtained results.
 
-\section{TODO}
+\section{Datasets}
 
-TODO
+In the past, FB15K and WN18 datasets were used to evaluate the quality of knowledge graph completion models.\ After
+it was noticed that a large number of test triplets can be obtained by inverting training triplets, the
+\textbf{FB15K-237} and \textbf{WN18RR} datasets were developed, reducing the mentioned problem.\ At this time,
+knowledge graph completion models are mainly evaluated on these two datasets.\ Therefore, we evaluate our models on
+FB15K-237 and WN18RR datasets.\newline
 
-\numberedchapter{Summary}
+\noindent The FB15K-237 dataset is a subset of a large open-source knowledge base, called Freebase.\ It contains
+relations between known people, movies, books, places and many others.\ The WN18RR dataset is a subset of WordNet,
+forming a large database of English words.\ The graph contains lexical and semantic relations.\ While the FB15K-237
+dataset contains several hundreds relations, the WN18RR dataset contains only 11.\ Additionally, the former
+one is much denser comparing the latter one.\ Therefore, the characteristics of both graph are significantly
+different.\ The precise statistics of both datasets are presented in \textit{Table} \ref{tab:datasets}.
 
-TODO
+\section{Metrics} \label{sec:metrics}
+
+\noindent In order to evaluate a model on a set of triples $D$, we utilise several ranking-based
+metrics for missing head and tail entities.\ Importantly, we do not use any triple contained in $D$ during the
+evaluation of $d \in D$ i.e.\ the knowledge contained in other triples tested cannot be used to boost the predictions
+for a specific $d \in D$.\ The metrics are calculated for each triple contained in $D$ and then averaged.\ Formally,
+let $(h, r, t) = \tilde{d} \in D$ denote a triple to be evaluated.\ To prepare a ranking for a missing head of
+$\tilde{d}$, we push a triple $([mask], r, t) = \tilde{d}_h \in D_h$ to a model.\ In case larger context is used by
+the model, it is pushed along with $\tilde{d}_h$.\ The context includes only triples contained in the training
+dataset, particularly triples from the validation dataset are not used when evaluating the quality of the test
+dataset.\ As a result of this procedure, for each $\tilde{h} \in E$ we obtain a probability that
+$(\tilde{h}, r, t) \in G$.\ The obtained vector of probabilities forms a ranking, where $\tilde{h}_1$ takes a higher
+place than $\tilde{h}_2$ if and only if $P((\tilde{h}_1, r, t) \in G) > P((\tilde{h}_2, r, t) \in G)$.\ In case two
+triples have been assigned the same probability, they are put on the same place in the ranking.\ The discussed procedure
+forms an \textit{initial ranking} $R_{\tilde{d}, h}$ for $\tilde{d}_h$.\ The same procedure is repeated for
+the tail entity $\tilde{d}_t$, forming an \textit{initial ranking} $R_{\tilde{d}, t}$.\newline
+
+\noindent The \textit{initial ranking} is postprocessed in order to obtain the \textit{final ranking}.\ The first
+step involves removing triples that are contained in either training, validation or test
+dataset.\ This is known as a \textit{filtered} setting, firstly proposed in \cite{transe_model} and widely adopted in
+other papers.\ Additionally, in case some probabilities outputted by the model correspond to other tokens than entities
+(e.g.\ relations), they are removed from the ranking.\ Finally, draws are resolved by putting $(\tilde{h}_1, r, t)$
+higher in the ranking than $(\tilde{h}_2, r, t)$ if and only if $\sigma(\tilde{h}_1) < \sigma(\tilde{h}_2)$, where
+$\sigma$ denotes a predefined order-determining function.\ Importantly, $\sigma$ is fixed during the evaluation process
+and corresponds to the order of entities in the vocabulary.\ We determined that the same order is used when the baseline
+models have been evaluated by other authors.\ Performing the discussed steps on the given \textit{initial ranking}
+$R_{\tilde{d}, h}$ (analogically $R_{\tilde{d}, t}$), forms the \textit{final ranking}
+$\tilde{R}_{\tilde{d}, h}$ (analogically $\tilde{R}_{\tilde{d}, t}$) used to construct evaluation metrics.\newline
+
+\begin{table}[!t]
+\centering
+\def\arraystretch{1.1}
+\begin{tabular}{| l | r | r |}
+ \hline
+ \textbf{Statistic} & \textbf{FB15K-237} & \textbf{WN18RR} \\ [0.5ex]
+ \Xhline{4\arrayrulewidth}
+ \textbf{Entities} & 14,541 & 40,943 \\
+ \hline
+ \textbf{Relations} & 237 & 11 \\
+ \hline
+ \textbf{Training triples} & 272,115 & 86,835 \\
+ \hline
+ \textbf{Validation triples} & 17,535 & 3,034 \\
+ \hline
+ \textbf{Test triples} & 20,466 & 3,134 \\
+ \hline
+\end{tabular}
+\caption{Statistics of FB15K-237 and WN18RR datasets.}
+\label{tab:datasets}
+\end{table}
+
+\noindent Let us denote the position of the considered $\tilde{d}_h$ in the final ranking
+$\tilde{R}_{\tilde{d}, h}$ (analogically $\tilde{R}_{\tilde{d}, t}$) as $r(\tilde{d}_h)$
+(analogically $r(\tilde{d}_t)$).\ The \textbf{Mean Rank (MR)} metric is defined by the formula
+$$
+MR_h = \frac{1}{|D|} \sum_{\tilde{d}_h \in D} r(\tilde{d}_h)
+$$
+which is simply a mean of rankings.\ Similarly, the \textbf{Mean Reciprocal Rank (MRR)} metric is defined by
+$$
+MRR_h = \frac{1}{|D|} \sum_{\tilde{d}_h \in D} \frac{1}{r(\tilde{d}_h)}
+$$
+In contrast to the MR metric, the higher MRR metric denotes the better score.\ Additionally, the score given by the
+MRR metric grows exponentially with respect to the position in the ranking.\ As a result, improving the scores of
+triples that are already high in the ranking is promoted more, compared to improving the scores of triples that are
+low in the ranking.\ Lastly, the \textbf{Hits@10} metric is defined by the formula
+$$
+Hits@10_h = \frac{1}{|D|} \sum_{\tilde{d}_h \in D} \mathbbm{1}_{r(\tilde{d}_h) \leq 10}
+$$
+where $\mathbbm{1}_C$ is an indicator function that assigns $1$ if and only if a condition $C$ is satisfied and
+otherwise it assigns $0$.\ Intuitively, the Hits@10 metric is the fraction of triples that were top 10 in the their
+rankings.\newline
+
+\noindent The above-defined metrics are calculated analogically for missing tail entities $D_t$, forming $MR_t$, $MRR_t$
+and $Hits@10_t$ metrics.\ Finally, the same metrics are calculated for all samples $D_a = D_h \cup D_t$, forming $MR_a$,
+$MRR_a$ and $Hits@10_a$ metrics.\ While we use head-specific and tail-specific metrics to debug our models, we report
+only metrics for all samples, which we refer as $MR = MR_a$, $MRR = MRR_a$ and $Hits@10 = Hits@10_a$.\newline
+
+\noindent As we mentioned above, draws are resolved by the order-determining function $\sigma$.\ While this is a
+standard method at this time, in the recent past several researchers used another approach, causing the target triple
+to be often higher in the ranking.\ More specifically, as it was shown in \cite{re_evaluation}, draws were resolved
+by putting the target triple first in case it draws with other entities.\ As a result, models putting the same
+probability for many entities performed very well, though their real quality was very poor.\ In particular, a model
+assigning the same probabilities to all entities achieves the perfect score in this setting.\ In our experiments, we often
+experienced this issue.\ Therefore, we decided to use order-determining function $\sigma$ and compare our methods only
+with the models that have been evaluated or reevaluated using the same approach.
+
+\section{Methodology}
+
+Our models are trained on predefined training datasets of WN18RR and FB15K-237 knowledge bases.\ The predefined
+validation datasets are used to estimate the quality of models every few thousand steps.\ The total number of training
+steps depend on whether validation metrics indicate some progress.\ Specifically, in case the MRR metric on validation
+dataset is lower than the best one, 5 times in a row, the training procedure is stopped.\ The maximum
+number of possible training steps is set to 160,000, which corresponds to a few hundred epochs for both datasets.\ In
+practice, most of trained models converge after about 40,000 steps.\ After the training procedure, the model's state
+corresponding to the highest MRR value is chosen and saved.\newline
+
+\noindent We run the training procedure several times, each time sampling hyperparameters
+from the predefined set.\ In particular, for all models we finetune the initial learning rate along
+with decay rate, dropout rate, weight decay, label smoothing, activation function used in all layers, the dimensions
+of embeddings and layers, the number of attention heads in each layer and a standard deviation $\sigma$ of initial
+parameters (truncated normal distribution is used for initialization).\ While the optimal values for most of
+the above-mentioned parameters are model-specific, we found that poor initialization leads the models to be stuck,
+making no progress.\ Therefore, learnable parameters of all models are initialized with
+$\sigma \in [0.01, 0.03]$.\ Additionally, we noticed that setting label smoothing $s$ to a high value
+$s \in [0.7, 0.85]$ consistently provides better results.\ We also noticed a positive impact of applying dropout layers
+and weight decay.\ For all models, the optimal number of embeddings dimensions $d_e$ was in $d_e \in [256, 512]$ range,
+while the optimal number of attention heads $n_a$ lied in $n_a \in [4, 8]$ range.\ Furthermore, the optimal number of
+dimensions of attention heads and pointwise feed-forward layers lied in $[256, 512]$ and $[512, 1024]$ ranges,
+respectively.\ Lastly, we found that the best models use learning rate $\alpha$ in range $\alpha \in [0.0001, 0.0005]$
+and linear decay with rate $0.0625$ i.e.\ the learning rate of the last step is equal to $0.0625\times \alpha$ and the
+learning rate of intermediate steps scales linearly.\newline
+
+\noindent The process of finding the best hyperparameters is repeated for each of the proposed models, forming separate
+categories.\ Afterwards, the best model for each category is chosen based on the MRR metric.\ In order to assess the
+quality of the chosen models, each of them is evaluated on the predefined test dataset.\ Additionally, we reproduce
+TransE, STransE and ConvE models, achieving similar results to those presented in other papers.\ Nevertheless, we
+compare our models with the results presented in original papers.\ In case, an original paper does not use the same
+evaluation protocol as the one discussed in \textit{Section} \ref{sec:metrics}, we rely on reevaluations performed by
+other researchers.
 
 \section{The obtained results}
 
-TODO
+\noindent Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut
+labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi
+ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
+cillum dolore eu fugiat nulla pariatur. \newline
+
+\noindent Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut
+labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi
+ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
+cillum dolore eu fugiat nulla pariatur. \newline
+
+\begin{table}[!t]
+\centering
+\def\arraystretch{1.1}
+\begin{tabular}{|l || r | r | r || r | r | r |}
+ \hline
+ \multirow{2}{*}{\textbf{Model}} & \multicolumn{3}{c||}{\textbf{FB15K-237}} & \multicolumn{3}{c|}{\textbf{WN18RR}} \\
+ \cline{2-7}
+ & \textbf{MRR} $\uparrow$ & \textbf{MR} $\downarrow$ & \textbf{Hits@10} $\uparrow$ & \textbf{MRR} $\uparrow$ &
+ \textbf{MR} $\downarrow$ & \textbf{Hits@10} $\uparrow$ \\
+ \Xhline{4\arrayrulewidth}
+ \textbf{TransE} & 0.294 & 357 & 0.465 & 0.226 & 3384 & 0.501 \\
+ \hline
+ \textbf{STransE} & 0.312 & - & 0.480 & 0.251 & - & 0.509 \\
+ \hline
+ \textbf{ConvE} & 0.325 & 244 & 0.501 & 0.430 & 4187 & 0.520 \\
+ \hline
+ \textbf{MINERVA} & 0.293 & - & 0.513 & 0.448 & - & 0.456 \\
+ \hline
+ \textbf{SACN} & 0.350 & - & 0.540 & 0.470 & - & 0.540 \\
+ \hline
+ \textbf{CompGCN} & 0.355 & 197 & 0.535 & 0.479 & 3533 & 0.546 \\
+ \hline
+ \textbf{Ours1} & ? & ? & ? & ? & ? & ? \\
+ \hline
+ \textbf{Ours2} & ? & ? & ? & ? & ? & ? \\
+ \hline
+ \textbf{Ours3} & ? & ? & ? & ? & ? & ? \\
+ \hline
+ \textbf{Ours4} & ? & ? & ? & ? & ? & ? \\
+ \hline
+ \textbf{Ours5} & ? & ? & ? & ? & ? & ? \\
+ \hline
+\end{tabular}
+\caption{Knowledge graph completion results on FB15K-237 and WN18RR test datasets.\ Note that some authors have not
+evaluated their models on MR metric.}
+\label{tab:full_results}
+\end{table}
+
+\noindent Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut
+labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi
+ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
+cillum dolore eu fugiat nulla pariatur. \newline
+
+
+\numberedchapter{Summary}
+
+In this thesis, we explored how transformed-based models can be applied to the knowledge graph completion
+problem.\ To reach our first milestone of outperforming triples-only methods, we developed an architecture operating
+on triples alone.\ We showed that it is superior to other methods in this category and presented the
+importance of developed components, performing an extensive hyperparameters fine-tuning.\ In the next part of this
+thesis, we extended our model to include the context extracted from the graph representation of training data.\ We
+presented various approaches to apply this idea and conducted several experiments measuring the impact of each
+modification.\ Furthermore, we compared our models with triples-only, reinforcement learning and graph neural networks
+approaches.\ The developed methods were superior to triples-only and reinforcement learning models, while the
+best-performing graph neural network model achieved similar quality.\ We can conclude that transformer-based methods
+are competitive with the current state of the art methods, even when no context information is used or it is much
+smaller compared to other methods, aggregating information from multi-hop neighbourhood.
 
 \section{Future work}
 
-TODO
+Although transformers proved to provide a significant improvement over other methods, adding the context to the model
+boost the performance only slightly.\ In other words, the transformer architecture operating on triples alone provide
+a surprisingly high quality boost, while context-based transformer models only add a little bit of extra quality.\ The
+same pattern can be observed when applying graph convolutional networks on top of other methods.\ It is an open
+question whether it means that either the context information is not so useful in the knowledge graph completion problem
+or the explored methods fail to extract it.\ One of the unexplored direction of future research is to combine
+transformer-based and graph-based methods.\ For instance, the CompGCN model could be used to aggregate information from
+the distant neighbourhood, while the transformer model could be applied on the aggregated embeddings.\ The other idea
+would be to stack a few transformers, one on top of each other.\ While this may sound like a graph neural network model,
+the transformers can be stacked in more custom ways, allowing layer-specific aggregations.\ Additionally, several
+extensions to the transformer architecture keep coming up and could be tried out to tackle the considered
+problem.\ One of recently developed pre-training methods include ELECTRA, discussed in
+\textit{Subsection} \ref{subsec:transformer_extensions}.\ This method could be used to pretrain our model on long paths
+with some entities masked out.
 
 \section{Acknowledgments}
 
-TODO
+I would like to thank my supervisor dr hab.\ Jan Chorowski from the Institute of Computer Science at the
+University of Wrocław for his assistance on this project and bringing in new ideas.\ I really appreciate his time
+devoted to me during the development of this thesis.
 
 \begin{thebibliography}{99}
 
@@ -981,5 +1215,6 @@ Shikhar Vashishth, Soumya Sanyal, Vikram Nitin, Partha Talukdar - \textit{Compos
 convolutional networks (2020)}
 
 \end{thebibliography}
+\addcontentsline{toc}{chapter}{Bibliography}
 
 \end{document}
