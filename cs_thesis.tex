@@ -157,22 +157,23 @@ financial services to secure human decisions and prevent money laundering initia
 In the recent years, various approaches have been tried to tackle the problem of knowledge graph completion.\ The most
 successful ones are based on data-driven models, often called machine learning models.\ These methods will be
 discussed more deeply in the \textit{Chapter} \ref{chapter:background}.\ For our task specifically, we can divide the
-considered models into ones that operate on triples alone (representing graph edges) and those that utilize graph
-context e.g.\ neighbours of a head/tail entity.\ Recently, a new branch of models that leverage additional text-based
-information has been established, but those models are not considered in this thesis.\newline
+considered models into ones that operate on triples alone (representing graph edges) i.e.\ context-free methods and
+those that utilize graph context e.g.\ neighbours of a head/tail entity.\ Recently, a new branch of models that
+leverage additional text-based information has been established, but those models are not considered in this
+thesis.\newline
 
-\noindent While the first triples-only methods were proposed in 2013, the new models are still developed, surpassing
+\noindent While the first context-free methods were proposed in 2013, the new models are still developed, surpassing
 the old ones.\ One of the first baseline models, learning latent representations of entities and relations, is known
 as the \textit{TransE} model introduced in \cite{transe_model}.\ The model was later extended in \cite{stranse_model}
 to \textit{STranse}, which allows entities to have relation-specific representations.\ Several other
 improvements, utilising convolutional neural networks to learn better representations, have been proposed,
-including \textit{ConvE} model presented in \cite{conve_model}.\ While many other triples-only models have been
+including \textit{ConvE} model presented in \cite{conve_model}.\ While many other context-free models have been
 developed, they retain the same quality of predictions.\ Therefore, we compare our methods only with the
 above-mentioned models.\newline
 
-\noindent In the past few years, several models have been developed to utilise graph-context information.\ The first
+\noindent In the past few years, several models have been developed to utilise context of a given graph.\ The first
 applications of those models to the considered problem have been proposed back in 2017.\ While many of the
-approaches failed to surpass triples-only models, a few models have provided a considerable quality
+approaches failed to surpass context-free models, a few models have provided a considerable quality
 improvement.\ One of the successful approaches include \cite{go_for_a_walk_model} that tries to walk through a graph
 to find a matching entity.\ The other popular methods are based on graph neural
 networks, especially on the \textit{GCN} architecture proposed in \cite{gcn_model}.\ The best-performing ones
@@ -199,7 +200,7 @@ performance of the model.\newline
 
 \noindent Motivated by the recent advancements in the transformer-based models, we decided to tackle to the problem
 of knowledge graph completion, using the above-mentioned models.\ In particular, we explore both
-triples-only and graph-context methods, determining whether a transformer can benefit from an additional context
+context-free and contextualised methods, determining whether a transformer can benefit from an additional context
 information.\ Besides it, we compare the developed methods with the related models on two benchmark datasets, known
 as WN18RR and FB15K-237.
 
@@ -229,14 +230,14 @@ approaches to artificial intelligence, finding applications in practically every
 \noindent Formally, a neural network is a complex mathematical function that maps input vectors to output
 vectors.\ One of the simplest neural network can be defined using the formula
 \begin{equation}\label{eq:one_layer_network}
-y = f(W x + b)
+y = f(W x + b)\ ,
 \end{equation}
 where $x, y$ denotes input and output vectors of size $n$, $m$ respectively, $W$ is a $n \times m$ matrix of
 parameters, $b$ denotes a so-called bias vector of size $m$ and $f$ is a fixed activation function that
 adds non-linearity to our formula.\ The more complex neural network would repeat the process of mapping vectors several
 times e.g.
 \begin{equation}\label{eq:multi_layer_network}
-y = f_3(f_2(f_1(W_1 x + b_1) W_2 + b_2) W_3 + b_3)
+y = f_3(f_2(f_1(W_1 x + b_1) W_2 + b_2) W_3 + b_3)\ .
 \end{equation}
 Due to its linear form, such network is often called a feed-forward neural network.\ An input vector $x$ is often
 called an input layer, the intermediate vectors are called hidden layers and an output vector $y$ is called
@@ -314,7 +315,7 @@ only one channel, in the more general case of $C$ channels, the kernel matrix wo
 \label{fig:convolutional_network}
 \end{figure}
 
-\subsection{Loss functions}
+\subsection{Loss functions}\label{subsec:loss_functions}
 
 In order to train a model, one needs to define a similarity between predicted outputs $\tilde{y}$ and ground-truth
 outputs $y$.\ A function that defines this similarity is called a loss function and depends on a considered
@@ -322,7 +323,7 @@ task.\ One popular case is when a target variable $y$ is continuous and the loss
 distance between $y$ and $\tilde{y}$.\ In the field of machine learning, this is often called a regression
 task.\ While many different functions can be designed to optimize such model, the most popular one is
 $$
-L_2(y, \tilde{y}) = ||y - \tilde{y}||_2 = \sum_i (y_i - \tilde{y}_i)^2
+L_2(y, \tilde{y}) = ||y - \tilde{y}||_2 = \sum_i (y_i - \tilde{y}_i)^2\ ,
 $$
 which is called L2 loss function.\ The other case is when $\tilde{y}$ represents an unnormalised probability
 distribution for a set of established classes (e.g.\ $C = \{cat, dog, rabbit\}$), while $y$ is so-called one-hot
@@ -333,7 +334,7 @@ $$
 $$
 and then apply cross-entropy loss function
 $$
-L(y, \hat{y}) = -\sum_i y_i log(\hat{y}_i)
+L(y, \hat{y}) = -\sum_i y_i log(\hat{y}_i)\ ,
 $$
 penalizing predictions for classes for which $y_i > 0$.\ Except natural intuitions that the above-defined loss
 function should be minimized in order to provide a good estimate of $y$, it has also mathematical foundations that
@@ -353,7 +354,7 @@ descent is utilised.\ Specifically, it computes a gradient of the loss function 
 using so-called backpropagation algorithm.\ As a result, the method obtains a vector that defines the direction that
 should be followed to lower the value of the loss function.\ Then, the vector of parameters is updated by applying
 $$
-\theta_{k + 1} = \theta_k - \alpha \nabla_{\theta} L(\tilde{Y}, Y)
+\theta_{k + 1} = \theta_k - \alpha \nabla_{\theta} L(\tilde{Y}, Y)\ ,
 $$
 where $\alpha$ is called a learning rate.\ The process of updating parameters is performed for all training batches and
 repeated $E$ times, where $E$ is referred as the number of epochs.\ While this naive algorithm can stuck in a
@@ -384,7 +385,7 @@ weights to many neurons rather than relying on a small number of connections.\ne
 \noindent The other technique to reduce the overfitting is to add an additional loss that penalizes model's
 parameters.\ The common way of applying this idea is to add a regularization term to the loss function
 $$
-L(y, \tilde{y})^{\theta} = L_m^{\theta}(y, \tilde{y}) + \lambda \sum_i \theta_i^2
+L(y, \tilde{y})^{\theta} = L_m^{\theta}(y, \tilde{y}) + \lambda \sum_i \theta_i^2\ ,
 $$
 where $\theta$ denotes a vector of parameters, $L_m$ is the loss given by the model and $\lambda$ is a parameter
 controlling the regularization strength.\ The above-defined technique is often called a weight decay.\ The intuition
@@ -442,7 +443,7 @@ embedded.\ Specifically, let $v_j \in W$ be a random node from the generated pat
 a set of nodes $K = \{w_{j - c}, w_{j - c + 1}, \dots, w_{j + 1}, w_{j + c}\}$.\ Now, draw one vertex $v_c \in K$
 and define $p(v_c | v_j)$ with the formula
 \begin{equation}\label{eq:deepwalk}
-p(v_c | v_j) = \frac{e^{R_j C_c^T}}{\sum_k e^{R_j C_k^T}}
+p(v_c | v_j) = \frac{e^{R_j C_c^T}}{\sum_k e^{R_j C_k^T}}\ ,
 \end{equation}
 where $R_i$ denotes the i-th row of the learnable embeddings matrix, while $C_i$ is the i-th row of the learnable
 context matrix.\ The goal of the above-defined model is to maximize this probability for the generated $v_j, v_c$
@@ -520,7 +521,7 @@ will consider a graph, whose neighbouring nodes exchange some information by sen
 messages.\ Formally, assume that each node $i$ has been assigned some representation $h_i^{(0)}$.\ In the k-th
 step, we will assign the (k + 1)-th representation of the node $i$ by applying
 \begin{equation}\label{eq:message_passing}
-h_i^{(k + 1)} = f_k(h_i^{(k)}, \{h_j^{(k)} : j \in N(i)\}))
+h_i^{(k + 1)} = f_k(h_i^{(k)}, \{h_j^{(k)} : j \in N(i)\}))\ ,
 \end{equation}
 where $N(i)$ denotes the neighbours of the node $i$ and $f_k$ is an aggregation function.\ An example illustrating
 the described procedure is shown in \textit{Figure} \ref{fig:graph_network}.\ This process is performed
@@ -555,7 +556,7 @@ neighbours (marked in blue).\ This process results in the new embedding $h_1^{(2
 Over time, researchers have developed multiple ways of modelling aggregating functions $f_k$.\ One of the most
 successful approaches, proposed in \cite{gcn_model}, utilises the following aggregation function
 $$
-H^{(k + 1)} = f_k(H^{(k)}) = \sigma(\tilde{D}^{-\frac{1}{2}} \tilde{A} \tilde{D}^{-\frac{1}{2}} H^{(k)} W^{(k)}))
+H^{(k + 1)} = f_k(H^{(k)}) = \sigma(\tilde{D}^{-\frac{1}{2}} \tilde{A} \tilde{D}^{-\frac{1}{2}} H^{(k)} W^{(k)}))\ ,
 $$
 where $\sigma$ denotes an activation function, $\tilde{A}$ is the adjacency matrix with added self-loops, $D$ is
 a diagonal matrix, such that $D_{ii}$ represents the order of the node $i$ and $W$ is layer-specific trainable
@@ -576,7 +577,7 @@ message.\ Specifically, let $\alpha_{ij} \in [0, 1]$ be a learnable weight, deno
 $i$ should put to its neighbour node $j$ and for non-neighbouring nodes set $\alpha_{ij} = 0.0$.\ Now, let the
 aggregation function be defined by the following formula
 $$
-h_i^{(k + 1)} = f_k(h_i^{(k)}, K) = \sigma(\sum_{h_j^{(k)} \in K} \alpha_{ij}^{(k)} W^{(k)} h_j^{(k)})
+h_i^{(k + 1)} = f_k(h_i^{(k)}, K) = \sigma(\sum_{h_j^{(k)} \in K} \alpha_{ij}^{(k)} W^{(k)} h_j^{(k)})\ ,
 $$
 where $K$ denotes the i-th node neighbours, $\sigma$ is an activation function and $W^{(k)}$ is a learnable
 matrix.\ Additionally, in order to take into account the current representation of the node $i$, self-connections
@@ -592,7 +593,7 @@ problem, which involves maximizing the long-time reward based on a sequence of d
 learning called Reinforcement learning.\ Formally, the goal of this learning method is to find a function $\pi$ that
 maximizes the so-called utility function
 $$
-U^{\pi}(s) = \mathbb{E}(\sum_{t=0}^{\infty} \gamma^t R(s_t) | \pi, s = s_0)
+U^{\pi}(s) = \mathbb{E}(\sum_{t=0}^{\infty} \gamma^t R(s_t) | \pi, s = s_0)\ ,
 $$
 where $\pi$ is a policy function that defines the actions taken by the model, $s_t$ denotes the t-th state
 of the game, $R(s_t)$ is a function that assigns a reward to a given state and $\gamma \in (0, 1)$ is a constant
@@ -635,21 +636,21 @@ a list of keys and their corresponding values form the matrices $K$ and $V$ of s
 the attention mechanism can be modelled in many ways, one of the most popular forms is the so-called scaled
 dot-product attention
 \begin{equation}\label{eq:self_attention}
-attention(Q, K, V) = softmax(\frac{Q K^T}{\sqrt{d_k}}) V
+attention(Q, K, V) = softmax(\frac{Q K^T}{\sqrt{d_k}}) V\ ,
 \end{equation}
 where $d_k$ is used to scale the computed weights.\ The illustration of the above-defined mechanism is shown in
 \textit{Figure} \ref{fig:attention}.\ Intuitively, it computes a convex sum of values, based on the similarity of
 the corresponding keys with the query $Q$.\ When $Q = K = V$, the described mechanism is called
 self-attention.\ Additionally, one may define attention weights, which in case of the self-attention have the form
 $$
-\alpha_{ij} = softmax(\frac{Q K^T}{\sqrt{d_k}})_{ij} = softmax(\frac{V V^T}{\sqrt{d_k}})_{ij}
+\alpha_{ij} = softmax(\frac{Q K^T}{\sqrt{d_k}})_{ij} = softmax(\frac{V V^T}{\sqrt{d_k}})_{ij}\ ,
 $$
 which indicate how much attention the i-th value (query) puts to the j-th value.\ Indeed, the attention mechanism
 was developed in order to learn how much attention should be put into other elements of a sequence.\ Over
 time, several extensions of the \textit{Equation} \ref{eq:self_attention} have been proposed to enable the model to
 learn better-suited combinations of values $V$ e.g.\
 $$
-attention(Q, K, V) = softmax(\frac{(Q W_Q) (K W_K)^T}{\sqrt{d_k}}) (V W_V)
+attention(Q, K, V) = softmax(\frac{(Q W_Q) (K W_K)^T}{\sqrt{d_k}}) (V W_V)\ ,
 $$
 where $W_K, W_V, W_Q$ are learnable matrices mapping keys, values and query, enabling the dot-product between the
 query and keys to be computed in the custom space as well as allowing values to be linearly transformed.\newline
@@ -682,7 +683,7 @@ a matrix of elements of a sequence and applies a few linear transformations, eac
 function.\ Importantly, the same transformations are applied to all elements of the sequence.\ This means that a
 model is enforced to learn generic transformations, regardless of the characteristics of a specific element.
 
-\subsection{Positional embeddings}
+\subsection{Positional embeddings}\label{subsec:positional_embeddings}
 
 It's a common case that the order of input sequence elements is important.\ For instance, consider a task of
 translating a sentence from one language to another.\ In this task, different permutations of words can lead to
@@ -700,7 +701,7 @@ PE_{(p, k)} =
 \begin{cases}
 sin(\frac{p}{100000^{k / d}}) &\text{if $k = 2i$}\\
 cos(\frac{p}{100000^{k / d}}) &\text{if $k = 2i + 1$}
-\end{cases}
+\end{cases}\ ,
 $$
 where $p$ is a position that will be represented by an embedding, $i$ refers to an individual dimension of the
 embedding and $d$ denotes the total number of dimensions.\ The other popular choice is to start with random positional
@@ -780,7 +781,7 @@ downstream task.
 
 In this section, we will present the related work on the knowledge graph completion problem.\ The methods will be
 presented from the simplest context-free ones that are based on convolutional networks to the more advanced
-graph-context ones based on reinforcement learning or graph neural networks.\ While in the recent few years hundreds of
+contextualised ones based on reinforcement learning or graph neural networks.\ While in the recent few years hundreds of
 different methods have been developed, we chose the ones that provided a significant quality boost compared to their
 predecessors.\ In parallel, we omit the methods that report inflated quality results due to improper evaluation
 protocol.
@@ -793,7 +794,7 @@ relations by low-dimensional continuous vectors, called embeddings.\ The most kn
 start with random embeddings of entities and relations, then iteratively update them by optimizing the model
 with the following loss function
 $$
-L(h, r, t, h', t') = max(0, ||h + r - t||_2 - ||h' + r - t'||_2 + \gamma)
+L(h, r, t, h', t') = max(0, ||h + r - t||_2 - ||h' + r - t'||_2 + \gamma)\ ,
 $$
 where $(h, r, t)$ represents a (positive) triple that belongs to the knowledge graph, while a (negative) triple
 $(h', r, t')$ is formed by replacing either $h$ or $t$, with a random entity.\ Intuitively, this model tries to
@@ -823,7 +824,7 @@ With the rise of machine learning models operating on graphs, several context-ba
 completion have been proposed.\ For instance, in \cite{sacn_model} the authors introduced the \textbf{SACN} model,
 leveraging custom WGCN layer
 $$
-h_i^{(k + 1)} = \sigma(\sum_{j \in N(i)} \alpha_{r(i, j)} g(h_i^{(k)}, h_j^{(k)}))
+h_i^{(k + 1)} = \sigma(\sum_{j \in N(i)} \alpha_{r(i, j)} g(h_i^{(k)}, h_j^{(k)}))\ ,
 $$
 where $g$ specifies how to incorporate neighboring information and $r(i, j)$ denotes the relation that connects the i-th
 node with the j-th node.\ Intuitively, the idea is to make it possible for each relation to focus on different parts
@@ -839,7 +840,7 @@ information is by adjusting attention weights.\ The other approach is presented 
 introduced in \cite{comp_gcn_model}, where the representations of relations are used directly by the graph neural
 network.\ More precisely, the authors defined the aggregation function
 $$
-h_i^{(k + 1)} = \sigma(\sum_{j \in N(i)} W_{\lambda(r)} g(h_j^{(k)}, r_j^{(k)}))
+h_i^{(k + 1)} = \sigma(\sum_{j \in N(i)} W_{\lambda(r)} g(h_j^{(k)}, r_j^{(k)}))\ ,
 $$
 where $r_j^{(k)}$ denotes the representation of the j-th relation in the context of the k-th aggregation function and
 $\lambda(r)$ is used to select one of three matrices, depending on the type of relation $r$.\ Specifically, the
@@ -847,7 +848,7 @@ matrix $W_O^{(k)}$ is used for relations originally contained in the knowledge g
 inverse relations and $W_S^{(k)}$ is used for self-loops.\ This allows the information to flow in both sides, while
 keeping the number of model's parameters low.\ Additionally, the relation embeddings are transformed after each layer
 $$
-r_i^{(k + 1)} = \tilde{W} r_i^{(k)}
+r_i^{(k + 1)} = \tilde{W} r_i^{(k)}\ ,
 $$
 which makes the aggregation functions more flexible.\ Finally, the authors tested the proposed CompGCN model with
 multiple scoring functions applied on top of aggregated embeddings, including TransE and ConvE.\newline
@@ -862,15 +863,190 @@ in order to increase the awareness about the visited nodes, the history is inclu
 
 \numberedchapter{Developed methods}\label{chapter:developed_methods}
 
+In the following sections we will discuss our transformer-based approach in depth.\ We will start by introducing the
+main components, forming our context-free architecture.\ Then, we will go through the developed extensions, which
+add graph context to our model.\ Lastly, we will define the models that were selected for further
+experiments discussed in \textit{Chapter} \ref{chapter:experiments}.
+
+\section{Context-free transformer architecture}
+
+Our model assigns latent representations (embeddings) to each entity and relation of a given knowledge
+graph.\ Additionally, we leverage positional embeddings discussed in \ref{subsec:positional_embeddings} and
+model-specific embeddings of special tokens.\ We refer to the above-mentioned objects as tokens.\ In particular, we
+keep all tokens in one large vocabulary $V$ and their embeddings in a matrix $T$ of size $|V| \times D$, where $D$
+denotes the dimensionality of one token.\ The embedding of a token can be thought of its learnable
+representation.\ The details on how we initialize and train token embeddings are
+included \textit{Subsection} \ref{subsec:token_embeddings}.\newline
+
+\noindent The developed architecture takes as its input a batch samples, where each sample is composed of a sequence of
+input tokens.\ In case of context-free model, all input sequences are of length 3, while in other models different
+training batches may contain sequences of different lengths.\ Nevertheless, all input sequences of a specific
+training batch are expected to be of the same length.\ Each token is transformed to the corresponding embedding and then
+several transformer layers, introduced in \textit{Subsection} \ref{subsec:transformer_encoder_decoder}, are applied to
+form the output sequence.\ This process can be interpreted as exchanging information between tokens, where each token
+can extract information from all other tokens and in particular, it can choose which information is useful using
+self-attention mechanism.\ The output sequence of contextualised tokens is used to supervise the model.\ The high-level
+overview of our model is shown in \textit{Figure} \ref{fig:high_level_view_of_our_model}.\ The details of
+sequence-to-sequence mapping component as well as loss functions are discussed more deeply in \textit{Subsection}
+\ref{subsec:sequence_to_sequence_mapping} and \textit{Subsection} \ref{subsec:transformer_loss_functions}
+respectively.\ Besides it, we highlight the importance of normalization layers in \textit{Subsection}
+\ref{subsec:normalization_layers}.\newline
+
+\noindent In case of context-free architecture, input tokens are partially masked triplets, representing edges
+contained in the training dataset.\ More specifically, for a given training triple $(h, r, t)$, we mask out either head
+entity $h$ or tail entity $t$.\ This forms either $([mask], r, t)$ or $(h, r, [mask])$ sequence, where $[mask]$ is a
+special token with a learnable embedding.\ In particular, for each edge we form both sequences and randomly shuffle all
+formed samples.\ After transforming tokens to their corresponding embeddings and applying sequence-to-sequence
+component, $(h_c, r_c, t_c)$ sequence of embeddings is obtained.\ We interpret each embedding as a contextualised
+representation of the corresponding input token.\ Particularly, the model is supervised in a way that the output token
+on a position matching $[mask]$ input token is close to the $h_e$ embedding/$h_t$ embedding of the masked head/tail
+entity.\ The closer both embeddings are, the better the model is.\ Both variants of the masked head and tail entity
+are presented in \textit{Figure} \ref{fig:context_free_model}.
+
+\begin{figure}[t]
+\centering
+\includegraphics[scale=0.23]{high_level_view_of_our_model}
+\caption{A high-level overview of our architecture.\ First, input tokens are mapped to their corresponding
+embeddings (marked in orange) and summed element-wise with positional embeddings (marked in yellow).\ The formed
+embeddings are marked in purple.\ Then, a few transformer layers (marked in blue), forming together sequence-to-sequence
+component (marked in green), are applied to map input sequence to output tokens.\ The outputs of the last layer
+(marked in red) are then passed to the loss function component (marked in gray) that supervise the whole model.}
+\label{fig:high_level_view_of_our_model}
+\end{figure}
+
+\begin{figure}[t]
+\centering
+\includegraphics[scale=0.25]{context_free_model}
+\caption{An illustration of input and output sequences of the developed context-free model.\ In the first case
+(on the left), head entity is masked out, while relation and tail entity embeddings are pushed to the model.\ The model
+is expected to restore the masked head entity.\ In the other case (on the right), tail entity is masked out and the
+model is learnt to restore it, given embeddings of relation and head entity.}
+\label{fig:context_free_model}
+\end{figure}
+
+\subsection{Initialising and training token embeddings}\label{subsec:token_embeddings}
+
+We have explored various approaches for embeddings initialization.\ We found that initialising embeddings of
+all tokens with random values provides the best results.\ Importantly, the initialized values should in a small range
+$[-0.05, 0.05]$, otherwise the network loses its capability to learn anything.\ We also explored several
+initialization distributions, including uniform and normal distribution.\ We found that in case of our models, the
+truncated normal distribution, which bounds normally distributed variable from below and above, provides the best
+quality.\ Besides it, we noticed that applying dropout layer discussed in \ref{subsec:overfitting} significantly
+reduces overfitting of our model.\newline
+
+\noindent For entities and relations, we also experimented with initialization by pretrained embeddings.\ More
+specifically, we trained TransE, ConvE models and then utilised trained representations to initialize our model.\ In
+parallel, we initialized special token and positional embeddings with random values.\ As
+the dimensionality of the learnt TransE embeddings is lower than the dimensionality of our model's embeddings, we
+filled the remaining parts of embeddings with random values.\ Additionally, as the pretrained embeddings are in a wide
+range, which could harm the learning capability of our model, we experimented with scaling them by a constant
+factor.\ Nevertheless, during our experiments, we didn't notice any quality boost by using the above-discussed
+initialization techniques.\ Therefore, we decided to stick with random initialization approach, which we find simple
+and effective.\newline
+
+\noindent In our experiments, we also tested fixed-function initialization of positional embeddings, discussed in
+\textit{Subsection} \ref{subsec:positional_embeddings}.\ In this case, the embeddings are fixed during the whole
+training procedure.\ We found that this initialization technique affects the quality of the trained models badly.
+
+
+\subsection{Sequence-to-sequence mapping}\label{subsec:sequence_to_sequence_mapping}
+
+Regardless of the number of input tokens, several transformer layers are applied on top of all of them.\ In the
+default setting each transformer layer contains independent parameters.\ We also experimented with sharing all
+corresponding parameters between transformer layers, forming an architecture similar to ALBERT that was discussed
+in \textit{Subsection} \ref{subsec:transformer_extensions}.\ We achieve similar quality of models in both
+settings.\ The parameter-sharing approach might be preferred in real applications as it has a few million less
+parameters.\ Nevertheless, more than half of the total number of parameters come from token embeddings.\newline
+
+\noindent Our experiments showed that the best performance is achieved when 6-12 transformer layers are
+applied.\ Importantly, each layer utilises multi-head attention mechanism discussed in \textit{Subsection}
+\ref{subsec:self_attention}.\ We found that at least 4 attention heads are needed to achieve the best
+quality of models.\ We also experimented with attention head dimension $D_a$ and pointwise feed-forward layer
+dimension $D_p$.\ Our analysis showed the the best quality is attained when $2 D_a = D_p = 512$.\ Lastly, we noticed
+that adding dropout layers before the components computing attention weights and before pointwise feed-forward layers,
+slightly reduces overfitting.\ Therefore, we include dropout layers in all our models.
+
+
+\subsection{Loss functions and model optimization}\label{subsec:transformer_loss_functions}
+
+The goal of our context-free model is to restore the masked head/tail entity.\ To compute similarities between
+each entity $e_i \in E$ and the produced embedding $p$, we use dot product.\ More precisely, we compute
+$$
+e_i \cdot p = \sum\limits_{j=1}^{D} e_{ij} p_j\ ,
+$$
+where $p = h_c$ if head entity was masked out and $p = t_c$ in case tail entity was masked out.\ As a result, a vector
+$t$ is formed, such that $t_i$ indicates a score of the i-th entity.\ Then, we apply softmax activation function on
+$t$ to obtain a probability distribution $\tilde{t}$.\ Lastly, the cross-entropy loss function, discussed in
+\textit{Subsection} \ref{subsec:loss_functions}, is computed between $\tilde{t}$ and a vector encoding an index of
+the masked head/tail entity.\ The computed loss is utilised to compute gradients of all model's parameters, including
+token embeddings.\ The optimization process is taken by Adam optimizer discussed in \textit{Subsection}
+\ref{subsec:optimization}. \newline
+
+\noindent During our experiments, we found that several optimization details play a crucial role in boosting the
+quality of our models.\ First of all, we apply label smoothing discussed in
+\textit{Subsection} \ref{subsec:overfitting}.\ We find that it greatly reduces overfitting and in particular, setting
+label smoothing parameter $s \in (0, 1)$ to a high value $s > 0.5$ significantly increases the performance of our
+models on unseen samples.\ The exact optimal value of $s$ is dataset-dependent, therefore it is finetuned for each
+experiment.\ The other important specific of our models is the gradient computation.\ On this point, the training
+process is more stable when softmax activation is computed along with cross entropy loss function, with the simplified
+formula.\ In our experiments, we noticed that it makes the gradient computation more precise and as a result the
+trained models converge faster.\ We also noticed that it impacts the final quality metrics measured on unseen
+samples.\newline
+
+\noindent We also experimented with other optimization variants.\ In particular, we discovered that an
+alternative approach is to replace softmax activation function with sigmoid activation defined using the formula
+$$
+\sigma(x) = \frac{1}{1 + e^{-x}}\ .
+$$
+In this setting, each entity is assigned a probability $\tilde{t} \in [0, 1]$ independently.\ In our experiments, we
+found that models trained in this way attain similar quality to when the softmax function is used.\ The other tested
+approach includes encoding all matching head/tail entities in one training sample.\ In this case, a vector encoding
+ground-truth entities contains multiple $1.0$ values and the model is penalized by all of these entries at
+once.\ Nevertheless, we didn't notice any quality boost when using this approach.
+
+\subsection{Normalization layers}\label{subsec:normalization_layers}
+
+In our experiments, we also tested the impact of applying normalization layers discussed in
+\textit{Subsection} \ref{subsec:normalization_layers}.\ We found that including them in our models
+has a positive impact on the quality of our models.\ More specifically, we put normalization layers in 3 places, namely
+straight on top embeddings, after attention layers and after pointwise feed-forward layers.\ Including all of the
+above-mentioned layers have a strong positive impact on the final models' quality.\ Additionally, we noticed that
+using layer normalization over batch normalization is beneficial for our models.\ Lastly, we experimented with the
+placement of normalization layers inside transformer blocks, discussed in
+\cite{layer_normalization_in_transformers}.\ Nevertheless, we discovered that placing normalization layers in
+different parts of the transformer blocks doesn't have much impact on our models.
+
+\section{Adding context to the developed architecture}
+
 TODO
 
-\section{TODO}
+\subsection{Path-based context}
 
 TODO
 
-\numberedchapter{Experiments}
+\subsection{Relation-based context}
 
-As part of this thesis, we conducted several experiments involving our ideas presented in
+TODO
+
+\subsection{Neighbours-based context}
+
+TODO
+
+\subsection{Similarity-based context}
+
+TODO
+
+\section{Training strategies}
+
+TODO
+
+\section{Selected models}
+
+TODO
+
+\numberedchapter{Experiments}\label{chapter:experiments}
+
+As part of this thesis, we conducted several experiments applying our ideas presented in
 \textit{Chapter} \ref{chapter:developed_methods}.\ Additionally, we compared the developed methods with competitive
 baseline models presented in \textit{Section} \ref{sec:background_models}.\ The first sections of this chapter describe
 the conducted experiments, while in the last section we present the obtained results.
@@ -879,15 +1055,15 @@ the conducted experiments, while in the last section we present the obtained res
 
 In the past, FB15K and WN18 datasets were used to evaluate the quality of knowledge graph completion models.\ After
 it was noticed that a large number of test triplets can be obtained by inverting training triplets, the
-\textbf{FB15K-237} and \textbf{WN18RR} datasets were developed, reducing the mentioned problem.\ At this time,
-knowledge graph completion models are mainly evaluated on these two datasets.\ Therefore, we evaluate our models on
-FB15K-237 and WN18RR datasets.\newline
+\textbf{FB15K-237} and \textbf{WN18RR} datasets have been developed, reducing the above-mentioned problem.\ At this
+time, knowledge graph completion models are mainly evaluated on these two datasets.\ Therefore, we evaluate our models
+on FB15K-237 and WN18RR datasets.\newline
 
 \noindent The FB15K-237 dataset is a subset of a large open-source knowledge base, called Freebase.\ It contains
 relations between known people, movies, books, places and many others.\ The WN18RR dataset is a subset of WordNet,
-forming a large database of English words.\ The graph contains lexical and semantic relations.\ While the FB15K-237
+forming a large database of English words.\ Its graph contains lexical and semantic relations.\ While the FB15K-237
 dataset contains several hundreds relations, the WN18RR dataset contains only 11.\ Additionally, the former
-one is much denser comparing the latter one.\ Therefore, the characteristics of both graph are significantly
+one is much denser comparing the latter one.\ Therefore, the characteristics of both datasets are significantly
 different.\ The precise statistics of both datasets are presented in \textit{Table} \ref{tab:datasets}.
 
 \section{Metrics} \label{sec:metrics}
@@ -945,18 +1121,18 @@ $\tilde{R}_{\tilde{d}, h}$ (analogically $\tilde{R}_{\tilde{d}, t}$) used to con
 $\tilde{R}_{\tilde{d}, h}$ (analogically $\tilde{R}_{\tilde{d}, t}$) as $r(\tilde{d}_h)$
 (analogically $r(\tilde{d}_t)$).\ The \textbf{Mean Rank (MR)} metric is defined by the formula
 $$
-MR_h = \frac{1}{|D|} \sum_{\tilde{d}_h \in D} r(\tilde{d}_h)
+MR_h = \frac{1}{|D|} \sum_{\tilde{d}_h \in D} r(\tilde{d}_h)\ ,
 $$
 which is simply a mean of rankings.\ Similarly, the \textbf{Mean Reciprocal Rank (MRR)} metric is defined by
 $$
-MRR_h = \frac{1}{|D|} \sum_{\tilde{d}_h \in D} \frac{1}{r(\tilde{d}_h)}
+MRR_h = \frac{1}{|D|} \sum_{\tilde{d}_h \in D} \frac{1}{r(\tilde{d}_h)}\ .
 $$
 In contrast to the MR metric, the higher MRR metric denotes the better score.\ Additionally, the score given by the
 MRR metric grows exponentially with respect to the position in the ranking.\ As a result, improving the scores of
 triples that are already high in the ranking is promoted more, compared to improving the scores of triples that are
 low in the ranking.\ Lastly, the \textbf{Hits@10} metric is defined by the formula
 $$
-Hits@10_h = \frac{1}{|D|} \sum_{\tilde{d}_h \in D} \mathbbm{1}_{r(\tilde{d}_h) \leq 10}
+Hits@10_h = \frac{1}{|D|} \sum_{\tilde{d}_h \in D} \mathbbm{1}_{r(\tilde{d}_h) \leq 10}\ ,
 $$
 where $\mathbbm{1}_C$ is an indicator function that assigns $1$ if and only if a condition $C$ is satisfied and
 otherwise it assigns $0$.\ Intuitively, the Hits@10 metric is the fraction of triples that were top 10 in the their
@@ -1069,16 +1245,16 @@ cillum dolore eu fugiat nulla pariatur. \newline
 \numberedchapter{Summary}
 
 In this thesis, we explored how transformed-based models can be applied to the knowledge graph completion
-problem.\ To reach our first milestone of outperforming triples-only methods, we developed an architecture operating
-on triples alone.\ We showed that it is superior to other methods in this category and presented the
-importance of developed components, performing an extensive hyperparameters fine-tuning.\ In the next part of this
+problem.\ To reach our first milestone of outperforming context-free baseline methods, we developed an architecture
+operating on triples alone.\ We showed that it is superior to other methods in this category and presented the
+importance of the developed components, performing an extensive hyperparameters fine-tuning.\ In the next part of this
 thesis, we extended our model to include the context extracted from the graph representation of training data.\ We
 presented various approaches to apply this idea and conducted several experiments measuring the impact of each
-modification.\ Furthermore, we compared our models with triples-only, reinforcement learning and graph neural networks
-approaches.\ The developed methods were superior to triples-only and reinforcement learning models, while the
+modification.\ Furthermore, we compared our models with context-free, reinforcement learning and graph neural networks
+approaches.\ The developed methods were superior to context-free and reinforcement learning models, while the
 best-performing graph neural network model achieved similar quality.\ We can conclude that transformer-based methods
 are competitive with the current state of the art methods, even when no context information is used or it is much
-smaller compared to other methods, aggregating information from multi-hop neighbourhood.
+smaller compared to other methods, which aggregate information from multi-hop neighbourhood.
 
 \section{Future work}
 
@@ -1086,7 +1262,7 @@ Although transformers proved to provide a significant improvement over other met
 boost the performance only slightly.\ In other words, the transformer architecture operating on triples alone provide
 a surprisingly high quality boost, while context-based transformer models only add a little bit of extra quality.\ The
 same pattern can be observed when applying graph convolutional networks on top of other methods.\ It is an open
-question whether it means that either the context information is not so useful in the knowledge graph completion problem
+question whether it means that the context information is not so useful in the knowledge graph completion problem
 or the explored methods fail to extract it.\ One of the unexplored direction of future research is to combine
 transformer-based and graph-based methods.\ For instance, the CompGCN model could be used to aggregate information from
 the distant neighbourhood, while the transformer model could be applied on the aggregated embeddings.\ The other idea
