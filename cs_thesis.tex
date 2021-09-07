@@ -868,7 +868,7 @@ main components, forming our context-free architecture.\ Then, we will go throug
 add graph context to our model.\ Lastly, we will define the models that were selected for further
 experiments discussed in \textit{Chapter} \ref{chapter:experiments}.
 
-\section{Context-free transformer architecture}
+\section{Context-free transformer architecture}\label{sec:context_free_model}
 
 Our model assigns latent representations (embeddings) to each entity and relation of a given knowledge
 graph.\ Additionally, we leverage positional embeddings discussed in \ref{subsec:positional_embeddings} and
@@ -1016,31 +1016,199 @@ placement of normalization layers inside transformer blocks, discussed in
 \cite{layer_normalization_in_transformers}.\ Nevertheless, we discovered that placing normalization layers in
 different parts of the transformer blocks doesn't have much impact on our models.
 
-\section{Adding context to the developed architecture}
+\section{Adding context to the developed architecture}\label{sec:context_models}
 
-TODO
+In the following section we will discuss the extensions developed to improve the context-free model.\ Particularly, we
+will focus on different approaches to utilise context of a graph representing training dataset.\ We reuse all of the
+components discussed in \textit{Section} \ref{sec:context_free_model}, including developed layers, overfitting
+prevention methods and loss functions.\ Nevertheless, we finetune parameters of each extended model separately as
+each of them has different characteristics.\ While this section covers only methods of putting additional context
+into the developed model, in \textit{Section} \ref{sec:training_strategies} we discuss several strategies to train the
+extended models.\ Finally, we put everything together in \textit{Section} \ref{sec:selected_models}, providing the most
+successful models.
 
 \subsection{Path-based context}
 
-TODO
+The most natural approach to provide the context information to our model is to utilise nodes neighbouring with a given
+source entity.\ The simplest way of applying this idea is to add one random neighbour along with a relation connecting
+it with the source entity, forming a path $(e_h, r_h, e_p, r_t, e_t)$, where either $e_h$ or $e_t$ is masked
+out.\ An illustration presenting this approach is shown in \textit{Figure} \ref{fig:path_based_model}.\ In our
+experiments, we draw several millions of paths, each forming one sample with missing head and one sample with missing
+tail.\ We also find it beneficial for our models to randomly mask out intermediate entity $e_p$.\ It enforces the
+model not to memorize edges that are contained in constructed paths.\ Additionally, we experimented with paths longer
+than 2, nevertheless we didn't observe any quality boost by doing so.\newline
+
+\begin{figure}[h!]
+\centering
+\includegraphics[scale=0.22]{path_based_model}
+\caption{An illustration of how path-based context information is used during the training process.\ The top part
+of the figure presents a path of length 2 extracted from the knowledge graph, while the bottom part shows corresponding
+training samples.\ The bottom-left part illustrates a training sample with masked head entity.\ Similarly, the
+bottom-right part illustrates a training with masked tail entity.\ The entity $e_p$ is randomly masked out with a
+probability defined by a hyperparameter.}
+\label{fig:path_based_model}
+\end{figure}
 
 \subsection{Relation-based context}
 
-TODO
+Another idea is to learn the model to predict a relation that connects given head and tail entities.\ This approach is
+illustrated in \textit{Figure} \ref{fig:relation_based_model}.\ Intuitively, adding relation prediction task to
+optimize our model can help it in understanding different relations, leading the model to learn better
+representations.\ This knowledge can transfer to our final task of predicting a missing head/tail
+entity.\ As in this case the goal of the model is to restore a relation, similarities used for the loss computation
+are computed between the produced embedding and each relation $r_i \in R$.\newline
+
+\begin{figure}[h!]
+\centering
+\includegraphics[scale=0.25]{relation_based_model}
+\caption{An example of how our models are learnt to predict relations.\ The left part of the figure shows the edge
+extracted from the knowledge graph, while the right side presents a training sample that corresponds to the extracted
+edge.}
+\label{fig:relation_based_model}
+\end{figure}
 
 \subsection{Neighbours-based context}
 
-TODO
+We also experiment with adding a larger context to our model.\ More specifically, we encode input edges/output edges
+(or both) of the source entity.\ For each training sample, we use a fixed number of edges $N$.\ In case the source
+entity contains more than $N$ neighbours, random $N$ neighbours are sampled.\ On the other hand, if the source entity
+contains less than $N$ neighbours, special tokens are put in the corresponding places of the input sequence.\ As the
+order of neighbours is not intended to impact the model's predictions, their positional embeddings are shared.\ The case
+when the source entity corresponds to the tail entity, while the head entity is masked out is shown
+in \textit{Figure} \ref{fig:neighbours_based_model_input_variant}.\ Similarly, the other case of tail entity masked out
+is illustrated in Figure \ref{fig:neighbours_based_model_output_variant}.\newline
+
+\noindent During our experiments, we applied several modifications of adding neighbours-based context to our
+model.\ First of all, we randomly mask out the source entity to assure that the model does not memorize edges encoded
+in a given input sequence.\ Secondly, in case both input and output edges are included, we randomly mask out edges
+contained in one of this category.\ Lastly, we observed a positive impact of keeping the sampled neighbourhood of
+a given source entity fixed during the whole optimization process as well during the inference.\ In particular, it
+has a high impact on predictions of samples for which the source entity contains very large number of neighbours.
+
+\begin{figure}[h!]
+\centering
+\includegraphics[scale=0.2]{neighbours_based_model_input_variant}
+\caption{An example of how the context of input and output neighbours is utilised to produce a training sample with
+masked head entity.\ The top part of the figure presents a subgraph containing $(e_h, r_{ht}, e_t)$ edge.\ The bottom
+part illustrates the subgraph encoded into input sequence taken by the model.}
+\label{fig:neighbours_based_model_input_variant}
+\end{figure}
+
+\begin{figure}[h!]
+\centering
+\includegraphics[scale=0.2]{neighbours_based_model_output_variant}
+\caption{An illustration of how the context of input and output neighbours is used to form a training sample with
+masked tail entity.\ The top part of the figure shows a subgraph containing $(e_h, r_{ht}, e_t)$ edge.\ The bottom
+part presents the subgraph encoded into input sequence taken by the model.}
+\label{fig:neighbours_based_model_output_variant}
+\end{figure}
 
 \subsection{Similarity-based context}
 
-TODO
+Our analysis of two benchmark datasets showed that many entities of a specific knowledge graph share common
+characteristics.\ In particular, many of them have common neighbours connected by the same relation.\ Inspired by
+this observation, we decided to collect similar entities and leverage these similarities during the optimization
+process of our model.\newline
 
-\section{Training strategies}
+\noindent In order to formulate similarities, for each entity $e_k$ we define a set of output
+relations $R_O(e_k) = \{r_1, \dots, r_{M_k}\}$ (analogically a set of input relations) contained in the training
+dataset.\ We ignore the information of how many times a specific relation occurs in edges outcoming from
+$e_k$.\ We find two entities $e_k, e_l$ similar if their sets of output edges $R_O(e_k)$ and $R_O(e_l)$ are
+similar.\ While there are many ways to formulate the similarity of sets, we use Jaccard index, which is defined using
+the formula
+$$
+J_O(e_k, e_l) = \frac{|R_O(e_k) \cap R_O(e_l)|}{|R_O(e_k) \cup R_O(e_l)|}
+$$
+Based on the above definition, we formulate the distance between two entities as
+$$
+D_O(e_k, e_l) = 1 - J_O(e_k, e_l)\ .
+$$
+For each entity $e_k$, we keep $N$ entities that are the closest ones in the metric space defined by
+$D_O(e_k, e_l)$, forming $S_O(e_k)$ sets.\ To avoid the computation of similarities between each pair of entities
+explicitly, we use Ball Tree data structure that splits the space recursively in order to keep similar entities
+in neighbouring subspaces.\ Analogously, similar entities with respect to input edges are selected, forming
+$S_I(e_k)$ sets.\newline
 
-TODO
+\noindent Now, we will focus on how we leverage $S_O(e_k)$ and $S_I(e_k)$ sets to add context information to our
+model.\ Our idea is to find edges that might be similar to a given, partially masked $(e_h, r_{ht}, e_t)$
+edge.\ In case the head entity $e_h$ is masked out, we first extract entities similar to $e_t$ according to the
+set $S_I(e_t)$.\ Then, we sample $K$ edges $(e_{i(k)}, r_{ht}, e_{o(k)})$, such that
+$e_{o(k)} \in S_I(e_t)$.\ Intuitively, $e_{i(k)}$ might be a good candidate for being the masked head entity $e_h$.\ As
+a result, it makes sense to contain this information in the input sequence pushed to our model.\ The way of encoding
+this information is shown in \textit{Figure} \ref{fig:similarity_based_model_input_variant}.\newline
 
-\section{Selected models}
+\noindent In case of the masked tail entity, the extraction of similar edges is analogous.\ The main difference is
+that the set $S_O(e_h)$ is used to extract searched entities.\ The other significant difference is that edges
+$(e_{i(k)}, r_{ht}, e_{o(k)})$ are samples with the $e_{i(k)} \in S_O(e_h)$ constraint.\ The discussed variant is
+illustrated in \textit{Figure} \ref{fig:similarity_based_model_output_variant}.\newline
+
+\noindent During our experiments, we finetune the parameter controlling the number of similar entities pushed to
+the model.\ We also experimented with removing entities that are similar to the source entity from the input
+sequence.\ In this case, input sequences contain only entities that are candidates for being the masked out
+entity.\ Nevertheless, we did not observe any performance gains or losses by applying this modification.\ Lastly,
+as sampled context edges are permutation-invariant, we share their positional embeddings, what actually impacts
+the performance of our model positively.
+
+
+\begin{figure}[h!]
+\centering
+\includegraphics[scale=0.27]{similarity_based_model_input_variant}
+\caption{An example of how similar entities are utilised to form a training sample with a missing head
+entity.\ The top part of the figure presents a partially masked edge $(e_h, r_{ht}, e_t)$ along with sampled edges,
+such that $e_{o1}$, $e_{o2}$ entities are similar to $e_t$. The bottom part illustrates how this information is
+encoded into input sequence pushed to the model.\newline
+}
+\label{fig:similarity_based_model_input_variant}
+\end{figure}
+
+\begin{figure}[h!]
+\centering
+\includegraphics[scale=0.27]{similarity_based_model_output_variant}
+\caption{An illustration of how similar entities are used to produce a training sample with a missing tail
+entity.\ The top part of the figure illustrates a partially masked edge $(e_h, r_{ht}, e_t)$ along with sampled edges,
+such that $e_{i1}$, $e_{i2}$ entities are similar to $e_h$.\ The bottom part shows how these edges are encoded into
+input sequence pushed to the model.}
+\label{fig:similarity_based_model_output_variant}
+\end{figure}
+
+\section{Training strategies}\label{sec:training_strategies}
+
+There is nothing to prevent our models from being trained with multiple types of inputs, in particular those
+discussed in \textit{Section} \ref{sec:context_models}.\ In our experiments, we test 3 different training strategies
+to utilise various context types.\ Importantly, we keep positional embeddings of given triple's tokens fixed for all
+input sequences, regardless of the specific context that is used.\ In contrast, tokens corresponding to different
+contexts have disjoint positional embeddings.\ This allows the model to recognize different contexts, while
+being aware of which tokens correspond to a considered triple.\newline
+
+\noindent The first training strategy is to pretrain the model using different context types.\ More specifically,
+given a probability distribution defining the probabilities of drawing specific context types, at each training step
+one context type is sampled.\ Then, it is utilised to draw a batch of samples coming from the corresponding context's
+dataset.\ The whole pretraining process can be thought of interleaving input sequences containing various
+contexts.\ The probability distribution of selecting specific contexts is finetuned during the hyperparameter
+optimization process.\ After the pretraining procedure, the model is trained without context to tune its parameters
+to the final task of predicting a missing head/tail entity.\ The inference of the model on the the validation and test
+datasets is performed on raw triples, without any context included.\ Therefore, other tasks are used only to train
+better representations of entities and relations.\ We call this strategy of training the
+\textbf{context-sampling strategy}.\newline
+
+\noindent The other training strategy is to train the model with only one context type.\ In this setting, the model
+is not trained on raw triples at all.\ Importantly, the inference on validation and test datasets is also performed by
+constructing samples with a given context type.\ Intuitively, leveraging context information during the inference
+can positively impact the performance on unseen examples.\ In case the context information is sampled, we find it
+beneficial for our models to use the same context while doing the inference as during the training
+process.\ We call the above-discussed strategy of training the \textbf{context-only strategy}.\newline
+
+\noindent The last developed strategy of training is split into 2 phases.\ In the first phase, a separate transformer
+model is trained for each context.\ This is motivated by the fact that when multiple contexts are used at the same
+time, the model can learn to ignore some of them, particularly those that make up worse predictors.\ On the other
+hand, sharing parameters of transformer layers between input sequences coming from different context types, can
+encourage the model to memorize some parts of sequences.\ After each transformer model is trained, the training enters
+into the second phase, in which another transformer is put on top the predicted embeddings.\ This allows the
+embeddings to exchange information and as a result improve their representations.\ After that, each embedding is used
+separately to compute a vector of similarities and the corresponding loss.\ Finally, all losses are summed up,
+forming the total loss.\ We call the presented training strategy the \textbf{separate-contexts strategy}.
+
+\section{Selected models}\label{sec:selected_models}
 
 TODO
 
