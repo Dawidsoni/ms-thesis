@@ -1210,7 +1210,15 @@ forming the total loss.\ We call the presented training strategy the \textbf{sep
 
 \section{Selected models}\label{sec:selected_models}
 
-TODO
+After testing various approaches and categories of models, we selected a few most representative ones that achieve the
+best performance.\ Importantly, each model has been finetuned independently to obtain the best quality
+possible.\ We call our first model that operates on raw edges without any context included, the
+\textbf{TransFree} model.\ The model that is pretrained to restore relations and missing head/tail entities of paths
+is called the \textbf{TransRP} model.\ In this case, the context-sampling training strategy is utilised.\ Going
+further, we call the model that is based on input and output neighbours, the \textbf{TransNIO} model.\ We find it
+beneficial to use the context-only training strategy in this case.\ Finally, we call the model with
+similarity-based context included, the \textbf{TransSim} model.\ Similarly, we use the context-only strategy to
+train it.
 
 \numberedchapter{Experiments}\label{chapter:experiments}
 
@@ -1356,15 +1364,23 @@ other researchers.
 
 \section{The obtained results}
 
-\noindent Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut
-labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi
-ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
-cillum dolore eu fugiat nulla pariatur. \newline
+\noindent We have evaluated the developed models discussed in \textit{Section} \ref{sec:selected_models} against
+competitive baseline models discussed in \textit{Section} \ref{sec:background_models}.\ The full results are presented
+in \textit{Table} \ref{tab:full_results}.\ We find our approach competitive, especially when it comes to
+the $MRR$ and $Hits@10$ metrics.\ In particular, in some cases our models are superior to all other models on these
+metrics.\ As we selected the models to maximize $MRR$, the competitive results on this metric were expected.\ We also
+obtained really good results on the $Hits@10$ metric, which correlates with the $MRR$ metric.\ Lastly, we observe that
+other models perform better on the $MR$ metric, which is negatively correlated with the other two
+metrics.\ Nevertheless, the current trend is to optimize the models on the $MRR$ metric, while skipping the evaluations
+on the $MR$ metric.\ This trend results from the fact that increasing the rank of entities that are far in the
+ranking, is not equally beneficial as increasing the rank of entities that are already high in the ranking.\ In other
+words, it is more useful to have less entities at the top of the ranking than having more entities in the middle of
+the ranking.\newline
 
-\noindent Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut
-labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi
-ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
-cillum dolore eu fugiat nulla pariatur. \newline
+\noindent We also observed that our context-free model performs surprisingly well, while adding any context to it
+has a little impact.\ Similar phenomenon can be observed when applying most graph neural networks on top of
+context-free methods.\ It is an open question whether additional context information is not useful in the problem
+of knowledge graph completion or the developed methods fail to extract it in the proper way.
 
 \begin{table}[!t]
 \centering
@@ -1375,8 +1391,8 @@ cillum dolore eu fugiat nulla pariatur. \newline
  \cline{2-7}
  & \textbf{MRR} $\uparrow$ & \textbf{MR} $\downarrow$ & \textbf{Hits@10} $\uparrow$ & \textbf{MRR} $\uparrow$ &
  \textbf{MR} $\downarrow$ & \textbf{Hits@10} $\uparrow$ \\
- \Xhline{4\arrayrulewidth}
- \textbf{TransE} & 0.294 & 357 & 0.465 & 0.226 & 3384 & 0.501 \\
+ \Xhline{5\arrayrulewidth}
+ \textbf{TransE} & 0.294 & 357 & 0.465 & 0.226 & \textbf{3384} & 0.501 \\
  \hline
  \textbf{STransE} & 0.312 & - & 0.480 & 0.251 & - & 0.509 \\
  \hline
@@ -1386,29 +1402,23 @@ cillum dolore eu fugiat nulla pariatur. \newline
  \hline
  \textbf{SACN} & 0.350 & - & 0.540 & 0.470 & - & 0.540 \\
  \hline
- \textbf{CompGCN} & 0.355 & 197 & 0.535 & 0.479 & 3533 & 0.546 \\
+ \textbf{CompGCN} & 0.355 & \textbf{197} & 0.535 & \textbf{0.479} & 3533 & 0.546 \\
+ \Xhline{3\arrayrulewidth}
+ \textbf{TransFree} & 0.353 & 441 & 0.543 & 0.470 & 4670 & \textbf{0.547} \\
  \hline
- \textbf{Ours1} & ? & ? & ? & ? & ? & ? \\
+ \textbf{TransRP} & 0.352 & 429 & 0.536 & 0.471 & 4792 & 0.545 \\
  \hline
- \textbf{Ours2} & ? & ? & ? & ? & ? & ? \\
+ \textbf{TransNIO} & \textbf{0.357} & 380 & 0.542 & 0.473 & 4826 & 0.545 \\
  \hline
- \textbf{Ours3} & ? & ? & ? & ? & ? & ? \\
- \hline
- \textbf{Ours4} & ? & ? & ? & ? & ? & ? \\
- \hline
- \textbf{Ours5} & ? & ? & ? & ? & ? & ? \\
+ \textbf{TransSim} & 0.354 & 309 & \textbf{0.544} & 0.471 & 4762 & 0.545 \\
  \hline
 \end{tabular}
-\caption{Knowledge graph completion results on FB15K-237 and WN18RR test datasets.\ Note that some authors have not
-evaluated their models on MR metric.}
+\caption{Knowledge graph completion results on FB15K-237 and WN18RR test datasets.\ The up arrow next to the metric
+name means that higher values are better, while the down arrow depicts that lower values are better.\ The bold line
+after the CompGCN model separates the baselines from our models.\ The numbers that are bold depicts the best achieved
+results on a specific metric.\ Note that some authors have not evaluated their models on the MR metric.}
 \label{tab:full_results}
 \end{table}
-
-\noindent Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut
-labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi
-ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
-cillum dolore eu fugiat nulla pariatur. \newline
-
 
 \numberedchapter{Summary}
 
