@@ -94,15 +94,16 @@ knowledge graph.
 
 \section{Problem formulation}
 
-Consider a set of objects $e \in E$ and a set of relations $r \in R$.\ Formally, a \textbf{knowledge graph} is a set
-of triples $(e_1, r, e_2) \in K$, which represents relations between the considered objects.\ Particularly,
+Consider a set of objects $e \in E$ and a set of relations between them $r \in R$.\ Formally, a \textbf{knowledge graph}
+is a set of triples $(e_1, r, e_2) \in K$, which represents relations between the considered objects.\ Particularly,
 $e_1 \in E$ is called to be in a (directed) relation $r \in R$ with $e_2 \in E$ if and only if
 $(e_1, r, e_2) \in K$.\ We will refer to an object $e \in E$ as an \textbf{entity} and to an object
 $r \in R$ as a \textbf{relation}.\ Besides it, when considering a triple $(e_1, r, e_2)$, we will refer to
-$e_1, e_2$ as a \textbf{head entity} and a \textbf{tail entity}, respectively.\ From the practical perspective, we
-can think of our structure as a directed graph where vertices are represented by entities and edges are labelled
-by relations.\ A toy example illustrating a knowledge graph is shown in
-\textit{Figure} \ref{fig:knowledge_graph}.\newline
+$e_1, e_2$ as a \textbf{head entity} and a \textbf{tail entity}, respectively.\ In case one of entities in a given
+triple is missing, we will refer to it as a \textbf{target entity}, while the other entity that is known will be
+denoted as a \textbf{source entity}.\ From the practical perspective, we can think of our structure as a directed graph
+where vertices are represented by entities and edges are labelled by relations.\ A toy example illustrating a
+knowledge graph is shown in \textit{Figure} \ref{fig:knowledge_graph}.\newline
 
 \noindent While we would expect a knowledge graph to contain any information that is useful for a user, in practise
 the vast majority of relations are missing.\ This fact becomes intuitive when one realizes that adding one edge
@@ -1203,7 +1204,7 @@ model is trained for each context.\ This is motivated by the fact that when mult
 time, the model can learn to ignore some of them, particularly those that make up worse predictors.\ On the other
 hand, sharing parameters of transformer layers between input sequences coming from different context types, can
 encourage the model to memorize some parts of sequences.\ After each transformer model is trained, the training enters
-into the second phase, in which another transformer is put on top the predicted embeddings.\ This allows the
+into the second phase, in which another transformer is put on top of the predicted embeddings.\ This allows the
 embeddings to exchange information and as a result improve their representations.\ After that, each embedding is used
 separately to compute a vector of similarities and the corresponding loss.\ Finally, all losses are summed up,
 forming the total loss.\ We call the presented training strategy the \textbf{separate-contexts strategy}.
@@ -1371,14 +1372,14 @@ the $MRR$ and $Hits@10$ metrics.\ In particular, in some cases our models are su
 metrics.\ As we selected the models to maximize $MRR$, the competitive results on this metric were expected.\ We also
 obtained really good results on the $Hits@10$ metric, which correlates with the $MRR$ metric.\ Lastly, we observe that
 other models perform better on the $MR$ metric, which is negatively correlated with the other two
-metrics.\ Nevertheless, the current trend is to optimize the models on the $MRR$ metric, while skipping the evaluations
-on the $MR$ metric.\ This trend results from the fact that increasing the rank of entities that are far in the
-ranking, is not equally beneficial as increasing the rank of entities that are already high in the ranking.\ In other
-words, it is more useful to have less entities at the top of the ranking than having more entities in the middle of
-the ranking.\newline
+metrics.\ Nevertheless, the current approach utilised by most of researchers is to optimize the models on the $MRR$
+metric, while skipping the evaluations on the $MR$ metric.\ This trend results from the fact that increasing the rank
+of entities that are far in the ranking, is not equally beneficial as increasing the rank of entities that are already
+high in the ranking.\ In other words, it is more useful to have less entities at the top of the ranking than having
+more entities in the middle of the ranking.\newline
 
 \noindent We also observed that our context-free model performs surprisingly well, while adding any context to it
-has a little impact.\ Similar phenomenon can be observed when applying most graph neural networks on top of
+has little impact.\ Similar phenomenon can be observed when applying most graph neural networks on top of
 context-free methods.\ It is an open question whether additional context information is not useful in the problem
 of knowledge graph completion or the developed methods fail to extract it in the proper way.
 
